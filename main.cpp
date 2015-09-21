@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <iterator>
 
 using namespace std;
 
@@ -23,6 +22,10 @@ Categoria crear_categoria(unsigned int codigo, string descripcion) {
     */
     Categoria categoria = {0, "una categoria"};
     return categoria;
+}
+
+void mostrar_categoria(Categoria categoria) {
+    cout << categoria.codigo << " - " << categoria.descripcion << endl;
 }
 
 struct Lista_de_categorias {
@@ -151,6 +154,7 @@ int main() {
         unsigned int codigo = obtener_codigo(almacen, "categorias");
         Categoria categoria = crear_categoria(codigo, descripcion);
         almacenar_categoria(almacen.categorias, categoria);
+        mostrar_categoria(categoria);
         break;
       }
       case 12:
