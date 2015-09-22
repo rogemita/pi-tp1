@@ -4,6 +4,7 @@
 using namespace std;
 
 int const CANTIDAD_CATEGORIAS = 200;
+int const CANTIDAD_PRESTAMOS = 200;
 
 struct Categoria {
   unsigned int codigo;
@@ -28,13 +29,48 @@ void mostrar_categoria(Categoria &categoria) {
     cout << categoria.codigo << " - " << categoria.descripcion << endl;
 }
 
+struct Lista_de_prestamos {
+    Categoria prestamos[CANTIDAD_PRESTAMOS];
+    unsigned int longitud {0};
+};
+
+/*
+PROPÓSITO: Verificar que no exista ningun prestamo con el codigo de la categoria dada
+PARÁMETROS:
+    categoria: la categoria a verificar
+    prestamos: el almacen de prestamos
+RETORNO: un booleano
+*/
+bool validar_eliminacion_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
+    /*
+     * Recorre y busca el codigo de la categoria dada en la lista de prestamos
+     * si lo encuentra devuelve false si no devuelve true
+     */
+    return true;
+}
+
 struct Lista_de_categorias {
     Categoria lista[CANTIDAD_CATEGORIAS];
     unsigned int longitud {0};
 };
 
+/*
+PROPÓSITO: crear una categoria
+PARÁMETROS:
+    descripcion: el campo descripcion de categoria (precondicion: cadena no vacia)
+RETORNO: una categoria
+*/
+void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
+    /*
+     * itera sobre la lista de categorias buscando la posicion dada
+     * cuando la encuentra la pisa realizando un corrimiento de ser necesario, si no la ignora
+     * y decrementa en una unidad a la longitud de la lista de categorias
+     */
+}
+
 struct Almacen {
     Lista_de_categorias categorias;
+    Lista_de_prestamos prestamos;
 };
 
 /*
@@ -139,8 +175,16 @@ string pedir_dato(string texto_a_mostrar, bool requerido) {
     return "una cadena";
 }
 
+/*
+PROPÓSITO: muestra un mensaje al usuario
+PARÁMETROS:
+    mensaje: el mensaje a mostrar
+*/
+void aviso(string mensaje) {
+    cout << mensaje << endl;
+}
+
 int main() {
-  Lista_de_categorias categorias = {};
   Almacen almacen = {};
 
   int opcion = -1;
@@ -185,15 +229,24 @@ int main() {
       case 12: {
         //modificar categoria
         unsigned int posicion = listar(almacen, "categorias");
-        Categoria *seleccionada = pedir_categoria(categorias, posicion);
+        Categoria *seleccionada = pedir_categoria(almacen.categorias, posicion);
         string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ", true);
         (*seleccionada).descripcion = nueva_descripcion;
         mostrar_categoria(*seleccionada);
         break;
       }
-      case 13:
-        //eliminiar catergoria
+      case 13: {
+        // eliminar categoria
+        unsigned int posicion = listar(almacen, "categorias");
+        Categoria *seleccionada = pedir_categoria(almacen.categorias, posicion);
+        bool valido = validar_eliminacion_categoria(*seleccionada, almacen.prestamos);
+        if (valido) {
+            borrar_categoria(almacen.categorias, posicion);
+        } else {
+            aviso("La categoría no puede eliminarse debido a que hay préstamos pendientes.");
+        }
         break;
+      }
       case 14:
         //agregar prestatario
         break;
