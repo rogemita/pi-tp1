@@ -144,10 +144,6 @@ int main() {
   int menu_actual = 0;
   do {
     switch (menu_actual*10 + opcion) {
-      case 1:
-        dibujar_menu(*menues[1]);
-        menu_actual = 1;
-        break;
       case 11: {
         //agregar categoria
         string descripcion = pedir_dato("Ingrese la descripción de la categoría: ", true);
@@ -172,10 +168,6 @@ int main() {
       case 16:
         //eliminar prestatario
         break;
-      case 2:
-        dibujar_menu(*menues[2]);
-        menu_actual = 2;
-        break;
       case 21:
         //agreagar prestamo
         break;
@@ -187,10 +179,6 @@ int main() {
         break;
       case 24:
         //devolver prestamo
-        break;
-      case 3:
-        dibujar_menu(*menues[3]);
-        menu_actual = 3;
         break;
       case 31:
         //cant obj prestados por cat
@@ -205,9 +193,12 @@ int main() {
         //list prestatario la menos un obj prestado
         break;
       default:
-        dibujar_menu(*menues[0]);
-        menu_actual = 0;
+        if (opcion == 1 || opcion == 2 || opcion == 3)
+            menu_actual = opcion;
+        else
+            menu_actual = 0;
     }
+    dibujar_menu(*menues[menu_actual]);
     cout << "Ingrese opcion: ";
     cin >> opcion;
   } while (opcion != 0);
