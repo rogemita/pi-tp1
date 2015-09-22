@@ -24,7 +24,7 @@ Categoria crear_categoria(unsigned int codigo, string descripcion) {
     return categoria;
 }
 
-void mostrar_categoria(Categoria categoria) {
+void mostrar_categoria(Categoria &categoria) {
     cout << categoria.codigo << " - " << categoria.descripcion << endl;
 }
 
@@ -53,6 +53,21 @@ unsigned int obtener_codigo(Almacen &almancen, string almacen_especifico) {
 }
 
 /*
+PROPÓSITO: muestra una lista de categorias/prestaomos/prestatarios y pide al usuario que seleccione uno
+PARÁMETROS:
+    alamcen: estructura donde se encuentra la informacion almacenada
+    almacen_especifico: el campo del almacen que se va a utilizar para el proposito
+RETORNO: un numero positivo
+*/
+unsigned int listar(Almacen &almacen, string almacen_especifico) {
+    /*
+     * segun el alamacen_especifico se recorre y muestra con una estructura de bucle la lista de esta entidad
+     * el usuario ingresa el orden y retorna el numero de orden - 1
+    */
+    return 0;
+}
+
+/*
 PROPÓSITO: almacena una categoria
 PARÁMETROS:
     categorias: el almacen de categorias
@@ -63,6 +78,20 @@ void almacenar_categoria(Lista_de_categorias &categorias, Categoria &categoria) 
      * agrega una nueva categoria en la lista donde se almacenan las categorias
      * Ademas mantiene la longitud de la lista de categorias
      */
+    categorias.lista[0] = categoria;
+}
+
+/*
+PROPÓSITO: obtener una categoria de la lista en la posicion dada
+PARÁMETROS:
+    categorias: el almacen de categorias
+    categoria: la categoria a almacenar
+*/
+Categoria* pedir_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
+    /*
+     * recorrer la lista de categorias hasta la posicion dada y devolver esa posicion de memoria
+     */
+    return &categorias.lista[0];
 }
 
 struct Prestatario {
@@ -153,9 +182,15 @@ int main() {
         mostrar_categoria(categoria);
         break;
       }
-      case 12:
+      case 12: {
         //modificar categoria
+        unsigned int posicion = listar(almacen, "categorias");
+        Categoria *seleccionada = pedir_categoria(categorias, posicion);
+        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ", true);
+        (*seleccionada).descripcion = nueva_descripcion;
+        mostrar_categoria(*seleccionada);
         break;
+      }
       case 13:
         //eliminiar catergoria
         break;
