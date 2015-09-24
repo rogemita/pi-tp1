@@ -126,10 +126,10 @@ bool validar_eliminacion_prestatario(Prestatario &prestatario, Lista_de_prestamo
 }
 
 /*
-PROPÓSITO: crear una categoria
+PROPÓSITO: borrar una categoria
 PARÁMETROS:
-    descripcion: el campo descripcion de categoria (precondicion: cadena no vacia)
-RETORNO: una categoria
+    categorias: la lista de categorias
+    posicion: la posicion de la categoria a eliminar
 */
 void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
     /*
@@ -140,16 +140,30 @@ void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
 }
 
 /*
-PROPÓSITO: crear un prestatario
+PROPÓSITO: borrar un prestatario
 PARÁMETROS:
-    descripcion: el campo descripcion de prestatario (precondicion: cadena no vacia)
-RETORNO: un prestatario
+    prestatarios: la lista de prestatarios
+    posicion: la posicion del prestario a eliminar
 */
 void borrar_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
     /*
      * itera sobre la lista de prestatarios buscando la posicion dada
      * cuando la encuentra la pisa realizando un corrimiento de ser necesario, si no la ignora
      * y decrementa en una unidad a la longitud de la lista de prestatarios
+     */
+}
+
+/*
+PROPÓSITO: borrar un prestamo
+PARÁMETROS:
+    pretamos: la lista de prestamos
+    posicion: la posicion del prestamo a eliminar
+*/
+void borrar_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
+    /*
+     * itera sobre la lista de prestamos buscando la posicion dada
+     * cuando la encuentra la pisa realizando un corrimiento de ser necesario, si no la ignora
+     * y decrementa en una unidad a la longitud de la lista de prestamos
      */
 }
 
@@ -181,6 +195,36 @@ unsigned int listar(Almacen &almacen, string almacen_especifico) {
      * el usuario ingresa el orden y retorna el numero de orden - 1
     */
     return 0;
+}
+
+/*
+PROPÓSITO: muestra una lista de prestamos de un prestatario y pide al usuario que seleccione uno
+PARÁMETROS:
+    prestamos: lista de prestamos
+    prestatario: prestatario del cual seleccionar los prestamos
+RETORNO: un puntero a un prestamo
+*/
+Prestamo* seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario &prestatario) {
+    /*
+     * se recorre y muestra con una estructura de bucle la lista de prestamos de un prestatario
+     * seleccionado y se le pide al usuario que eliga uno de las opciones listadas
+     * el usuario ingresa la seleccion y se valida que sea correcta y lo devuelve
+    */
+    Categoria categoria = {0, "una categiria"};
+    Prestatario p = {0, "nombre", "apellido"};
+    Prestamo prestamo = {&categoria, &p, "un prestamo", true};
+    return &prestamo;
+}
+
+/*
+PROPÓSITO: devuelve un prestamo
+PARÁMETROS:
+    prestamo: el prestamo a devolver
+*/
+void devolver_prestamo(Prestamo &prestamo){
+    /*
+     * Cambia el campo estado de True a False
+     */
 }
 
 /*
@@ -229,7 +273,7 @@ void almacenar_prestatario(Lista_de_prestatarios &prestatarios, Prestatario &pre
 PROPÓSITO: obtener una categoria de la lista en la posicion dada
 PARÁMETROS:
     categorias: el almacen de categorias
-    categoria: la categoria a almacenar
+    posicion: la posicion de la categoria
 */
 Categoria* pedir_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
     /*
@@ -242,7 +286,7 @@ Categoria* pedir_categoria(Lista_de_categorias &categorias, unsigned int posicio
 PROPÓSITO: obtener un prestatario de la lista en la posicion dada
 PARÁMETROS:
     prestatarios: el almacen de prestatarios
-    prestatario: el prestatario a almacenar
+    posicion: la posicion del prestatario
 */
 Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
     /*
@@ -250,6 +294,20 @@ Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int
      */
     return &prestatarios.lista[0];
 }
+
+/*
+PROPÓSITO: obtener un prestamo de la lista en la posicion dada
+PARÁMETROS:
+    prestamos: el almacen de prestamos
+    posicion: la posicion del prestamo
+*/
+Prestamo* pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
+    /*
+     * recorrer la lista de prestamos hasta la posicion dada y devolver esa posicion de memoria
+     */
+    return &prestamos.lista[0];
+}
+
 
 /*
 PROPÓSITO: crear un prestatario
@@ -307,14 +365,15 @@ PARÁMETROS:
     requerido: bool que indica si este campo es o no obligatorio
 RETORNO: un unsigned int
 */
-Categoria* pedir_categoria(Lista_de_categorias &categorias, string texto_a_mostrar, bool requerido) {
+Categoria* pedir_categoria(Lista_de_categorias &categorias, string texto_a_mostrar) {
     /*
      * Pide listar las categorias existentes, si el usuario indica que si
      * muestra el texto_a_mostrar en la pantalla y recibe un codigo
      * se valida la existencia del codigo
      * si no es valido se vuelve a repetir el proceso
      */
-    return 0;
+    Categoria categoria = {0, "una categoria"};
+    return &categoria;
 }
 
 /*
@@ -325,14 +384,72 @@ PARÁMETROS:
     requerido: bool que indica si este campo es o no obligatorio
 RETORNO: un unsigned int
 */
-Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto_a_mostrar, bool requerido) {
+Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto_a_mostrar) {
     /*
      * Pide listar los prestatarios existentes, si el usuario indica que si
      * muestra el texto_a_mostrar en la pantalla y recibe un codigo
      * se valida la existencia del codigo
      * si no es valido se vuelve a repetir el proceso
      */
-    return 0;
+     Prestatario prestatario = {0, "un nombre", "un apellido"};
+    return &prestatario;
+}
+
+/*
+PROPÓSITO: dibujar en pantalla un reporte de cantidad de prestamos por cada categoria
+PARÁMETROS:
+    alamacen: el almacen donde se encuentra toda la informacion
+*/
+void reporte_cantidad_prestamos_por_categoria(Almacen &almacen) {
+  /*
+   * ciclar la lista de categorias y llamar a una funcion auxiliar
+   * que retorna la lista de prestamos dada una categoria
+   * y mostrar la longitud de esta y se dibuja en pantalla
+   * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
+   * categoria el codigo de la categoria recibida por parametro
+   */
+}
+
+/*
+PROPÓSITO: dibujar en pantalla un reporte de prestamos para una categoria dada
+PARÁMETROS:
+    prestamos: la lista de prestamos
+    categoria: la categoria para filtrar prestamos
+*/
+void reporte_prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria) {
+  /*
+   * llama una funcion auxiliar que retorna una lista de prestamos dada una categoria.
+   * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
+   * categoria el codigo de la categoria recibida por parametro.
+   * Despues se recorre la lista devuelta para dibujar en pantalla
+   */
+}
+
+/*
+PROPÓSITO: dibujar en pantalla un reporte de prestamos pendientes ordenados y agrupados por el campo dado
+PARÁMETROS:
+    alamacen: el almacen donde se encuentra toda la informacion
+    campo: texto C/c para categoria o P/p para prestatario
+*/
+void listar_prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo) {
+  /*
+   * creamos un array auxiliar con los codigo de categoria o por codigo de prestatario
+   * extraidos de el array de prestamos. Luego lo ordenamos y eliminamos repeticiones de cod.
+   * Se recorre este array de enteros y dentro se recorren los prestamos y se
+   * muestra por pantalla todos los prestamos asociados con el codigo de campo que corresponde.
+   */
+}
+
+/*
+PROPÓSITO: dibujar los prestatarios que tienen prestamos pendientes
+PARÁMETROS:
+    alamacen: el almacen donde se encuentra toda la informacion
+*/
+void listar_prestatarios_con_prestamos_pendientes(Almacen &almacen) {
+  /*
+   * Se recorren los prestamos y si el campo estado es true se alamacena
+   * el prestatario en un array auxiliar para luego mostrarlo por pantalla
+   */
 }
 
 /*
@@ -363,9 +480,9 @@ int main() {
   };
   Menu menu_2 = {2, 4, {
     "Agregar préstamo",
-    "Modificar préstamo",
-    "Eliminar préstamo",
-    "Devolver préstamo"}
+    "Modificar préstamo",
+    "Eliminar préstamo",
+    "Devolver préstamo"}
   };
   Menu menu_3 = {3, 4, {
     "Cantidad de objetos prestados por categoría",
@@ -442,35 +559,63 @@ int main() {
       }
       case 21: {
         //agreagar prestamo
-        Categoria *categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ", true);
-        Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ", true);
+        Categoria *categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
+        Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
         string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ", true);
         Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
         almacenar_prestamo(almacen.prestamos, prestamo);
         mostrar_prestamo(prestamo);
         break;
       }
-      case 22:
+      case 22: {
         //modificar prestamo
+        unsigned int posicion = listar(almacen, "prestamo");
+        Prestamo *seleccionado = pedir_prestamo(almacen.prestamos, posicion);
+        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ", true);
+        (*seleccionado).descripcion = nueva_descripcion;
+        mostrar_prestamo(*seleccionado);
         break;
-      case 23:
+      }
+      case 23: {
         //eliminar prestamo
+        unsigned int posicion = listar(almacen, "prestamos");
+        Prestamo *seleccionado = pedir_prestamo(almacen.prestamos, posicion);
+        borrar_prestamo(almacen.prestamos, posicion);
+        aviso("El prestamo fue eliminado con exito.");
         break;
-      case 24:
+      }
+      case 24: {
         //devolver prestamo
+        unsigned int posicion = listar(almacen, "prestatario");
+        Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, posicion);
+        Prestamo *seleccionado = seleccionar_prestamo(almacen.prestamos, *prestatario);
+        devolver_prestamo(*seleccionado);
+        aviso("El prestamo fue devuelto con exito");
         break;
-      case 31:
+      }
+      case 31: {
         //cant obj prestados por cat
+        reporte_cantidad_prestamos_por_categoria(almacen);
         break;
-      case 32:
+      }
+      case 32: {
         //list prestamo por cat
+        unsigned int posicion = listar(almacen, "categorias");
+        Categoria* seleccionada = pedir_categoria(almacen.categorias, posicion);
+        reporte_prestamos_por_categoria(almacen.prestamos, *seleccionada);
         break;
-      case 33:
+      }
+      case 33: {
+        string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?", true);
+        listar_prestamos_pendientes_segun_criterio(almacen, campo);
         //list ordenado prestamo por cat o prestatario
         break;
-      case 34:
+      }
+      case 34: {
         //list prestatario la menos un obj prestado
+        listar_prestatarios_con_prestamos_pendientes(almacen);
         break;
+      }
       default:
         if (opcion == 1 || opcion == 2 || opcion == 3)
             menu_actual = opcion;
