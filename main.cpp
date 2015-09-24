@@ -5,15 +5,51 @@ using namespace std;
 
 int const CANTIDAD_CATEGORIAS = 200;
 int const CANTIDAD_PRESTAMOS = 200;
+int const CANTIDAD_PRESTATARIOS = 200;
 
 struct Categoria {
   unsigned int codigo;
   string descripcion;
 };
 
+struct Lista_de_categorias {
+    Categoria lista[CANTIDAD_CATEGORIAS];
+    unsigned int longitud {0};
+};
+
+struct Prestatario {
+  unsigned int codigo;
+  string apellido;
+  string nombre;
+};
+
+struct Lista_de_prestatarios {
+    Prestatario lista[CANTIDAD_PRESTATARIOS];
+    unsigned int longitud {0};
+};
+
+struct Prestamo {
+  Categoria *categoria;
+  Prestatario *prestatario;
+  string descripcion;
+  bool estado;
+};
+
+struct Lista_de_prestamos {
+    Prestamo lista[CANTIDAD_PRESTAMOS];
+    unsigned int longitud {0};
+};
+
+struct Almacen {
+    Lista_de_categorias categorias;
+    Lista_de_prestatarios prestatarios;
+    Lista_de_prestamos prestamos;
+};
+
 /*
 PROPÓSITO: crear una categoria
 PARÁMETROS:
+    codigo: campo codigo de la categoria
     descripcion: el campo descripcion de categoria (precondicion: cadena no vacia)
 RETORNO: una categoria
 */
@@ -25,14 +61,39 @@ Categoria crear_categoria(unsigned int codigo, string descripcion) {
     return categoria;
 }
 
+/*
+PROPÓSITO: crear una categoria
+PARÁMETROS:
+    categoria: puntero a una categoria
+    prestatario: puntero a un prestatario
+    descripcion: el campo descripcion del prestamo (precondicion: cadena no vacia)
+RETORNO: una categoria
+*/
+Prestamo crear_prestamo(Categoria *categoria, Prestatario *prestatario, string descripcion) {
+  /*
+    *  crea una variable del tipo Prestamo utilizando la descripcion, categoria, prestamo y el codigo pasados por parametro
+  */
+  Categoria cat = {0, "una categoria"};
+  Prestatario prest = {0, "un prestatario"};
+  Prestamo prestamo = {&cat, &prest, "un prestamo", true};
+  return prestamo;
+}
+
 void mostrar_categoria(Categoria &categoria) {
     cout << categoria.codigo << " - " << categoria.descripcion << endl;
 }
 
-struct Lista_de_prestamos {
-    Categoria prestamos[CANTIDAD_PRESTAMOS];
-    unsigned int longitud {0};
-};
+void mostrar_prestatario(Prestatario &prestatario) {
+    cout << prestatario.codigo << " - " << prestatario.apellido << ", " << prestatario.nombre << endl;
+}
+
+void mostrar_prestamo(Prestamo &prestamo) {
+    mostrar_categoria(*(prestamo.categoria));
+    cout << endl;
+    mostrar_prestatario(*(prestamo.prestatario));
+    cout << endl;
+    cout << prestamo.descripcion << endl;
+}
 
 /*
 PROPÓSITO: Verificar que no exista ningun prestamo con el codigo de la categoria dada
@@ -44,15 +105,25 @@ RETORNO: un booleano
 bool validar_eliminacion_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
     /*
      * Recorre y busca el codigo de la categoria dada en la lista de prestamos
-     * si lo encuentra devuelve false si no devuelve true
+     * si lo encuentra devuelve false, sino devuelve true
      */
     return true;
 }
 
-struct Lista_de_categorias {
-    Categoria lista[CANTIDAD_CATEGORIAS];
-    unsigned int longitud {0};
-};
+/*
+PROPÓSITO: Verificar que no exista ningun prestamo con el codigo del prestatario dado
+PARÁMETROS:
+    prestatario: el prestatario a verificar
+    prestamos: el almacen de prestamos
+RETORNO: un booleano
+*/
+bool validar_eliminacion_prestatario(Prestatario &prestatario, Lista_de_prestamos &prestamos) {
+    /*
+     * Recorre y busca el codigo del prestatario dado en la lista de prestamos
+     * si lo encuentra devuelve false, sino devuelve true
+     */
+    return true;
+}
 
 /*
 PROPÓSITO: crear una categoria
@@ -68,10 +139,19 @@ void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
      */
 }
 
-struct Almacen {
-    Lista_de_categorias categorias;
-    Lista_de_prestamos prestamos;
-};
+/*
+PROPÓSITO: crear un prestatario
+PARÁMETROS:
+    descripcion: el campo descripcion de prestatario (precondicion: cadena no vacia)
+RETORNO: un prestatario
+*/
+void borrar_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
+    /*
+     * itera sobre la lista de prestatarios buscando la posicion dada
+     * cuando la encuentra la pisa realizando un corrimiento de ser necesario, si no la ignora
+     * y decrementa en una unidad a la longitud de la lista de prestatarios
+     */
+}
 
 /*
 PROPÓSITO: generar un codigo automatico para la estructura a crear
@@ -104,6 +184,20 @@ unsigned int listar(Almacen &almacen, string almacen_especifico) {
 }
 
 /*
+PROPÓSITO: almacena un prestamo
+PARÁMETROS:
+    prestamos: el almacen de prestamos
+    prestamo: el prestamo a almacenar
+*/
+void almacenar_prestamo(Lista_de_prestamos &prestamos, Prestamo &prestamo) {
+    /*
+     * agrega un nuevo prestamo en la lista donde se almacenan los prestamos
+     * Ademas mantiene la longitud de la lista de prestamos
+     */
+    prestamos.lista[0] = prestamo;
+}
+
+/*
 PROPÓSITO: almacena una categoria
 PARÁMETROS:
     categorias: el almacen de categorias
@@ -115,6 +209,20 @@ void almacenar_categoria(Lista_de_categorias &categorias, Categoria &categoria) 
      * Ademas mantiene la longitud de la lista de categorias
      */
     categorias.lista[0] = categoria;
+}
+
+/*
+PROPÓSITO: almacena un prestatario
+PARÁMETROS:
+    pretatarios: el almacen de prestatarios
+    prestatario: el prestatario a almacenar
+*/
+void almacenar_prestatario(Lista_de_prestatarios &prestatarios, Prestatario &prestatario) {
+    /*
+     * agrega un nuevo prestatario en la lista donde se almacenan los prestatarios
+     * Ademas mantiene la longitud de la lista de prestatarios
+     */
+    prestatarios.lista[0] = prestatario;
 }
 
 /*
@@ -130,18 +238,34 @@ Categoria* pedir_categoria(Lista_de_categorias &categorias, unsigned int posicio
     return &categorias.lista[0];
 }
 
-struct Prestatario {
-  unsigned int codigo;
-  string apellido;
-  string nombre;
-};
+/*
+PROPÓSITO: obtener un prestatario de la lista en la posicion dada
+PARÁMETROS:
+    prestatarios: el almacen de prestatarios
+    prestatario: el prestatario a almacenar
+*/
+Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
+    /*
+     * recorrer el lista de prestatarios hasta la posicion dada y devolver esa posicion de memoria
+     */
+    return &prestatarios.lista[0];
+}
 
-struct Prestamo {
-  Categoria *categoria;
-  Prestatario *prestatario;
-  string descripcion;
-  bool estado;
-};
+/*
+PROPÓSITO: crear un prestatario
+PARÁMETROS:
+    codigo: campo codigo de la categoria
+    nombre: el campo nombre del prestatario (precondicion: cadena no vacia)
+    apellido: el campo apellido del prestatario (precondicion: cadena no vacia)
+RETORNO: un prestatario
+*/
+Prestatario crear_prestatario(unsigned int codigo, string nombre, string apellido) {
+    /*
+     *  crea una variable del tipo Prestatario utilizando el nombre, apellido y el codigo pasados por parametro
+    */
+    Prestatario prestatario = {0, "nombre", "apellido"};
+    return prestatario;
+}
 
 struct Menu {
   int id;
@@ -173,6 +297,42 @@ string pedir_dato(string texto_a_mostrar, bool requerido) {
      * luego de la validacion retorna la cadena ingresada
      */
     return "una cadena";
+}
+
+/*
+PROPÓSITO: obtener una categoria existente, solicitando al usuario ingresar el codigo
+PARÁMETROS:
+    categorias: Lista de categorias para listar
+    texto_a_mostrar: texto de referencia a lo que se debe ingresar
+    requerido: bool que indica si este campo es o no obligatorio
+RETORNO: un unsigned int
+*/
+Categoria* pedir_categoria(Lista_de_categorias &categorias, string texto_a_mostrar, bool requerido) {
+    /*
+     * Pide listar las categorias existentes, si el usuario indica que si
+     * muestra el texto_a_mostrar en la pantalla y recibe un codigo
+     * se valida la existencia del codigo
+     * si no es valido se vuelve a repetir el proceso
+     */
+    return 0;
+}
+
+/*
+PROPÓSITO: obtener un prestatario existente, solicitando al usuario ingresar el codigo
+PARÁMETROS:
+    prestatarios: Lista de prestatarios para listar
+    texto_a_mostrar: texto de referencia a lo que se debe ingresar
+    requerido: bool que indica si este campo es o no obligatorio
+RETORNO: un unsigned int
+*/
+Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto_a_mostrar, bool requerido) {
+    /*
+     * Pide listar los prestatarios existentes, si el usuario indica que si
+     * muestra el texto_a_mostrar en la pantalla y recibe un codigo
+     * se valida la existencia del codigo
+     * si no es valido se vuelve a repetir el proceso
+     */
+    return 0;
 }
 
 /*
@@ -247,18 +407,49 @@ int main() {
         }
         break;
       }
-      case 14:
+      case 14:{
         //agregar prestatario
+        string nombre = pedir_dato("Ingrese el nombre del prestatario: ", true);
+        string apellido = pedir_dato("Ingrese el apellido del prestatario: ", true);
+        unsigned int codigo = obtener_codigo(almacen, "prestatario");
+        Prestatario prestatario = crear_prestatario(codigo, nombre, apellido);
+        almacenar_prestatario(almacen.prestatarios, prestatario);
+        mostrar_prestatario(prestatario);
         break;
-      case 15:
+      }
+      case 15:{
         //modificar prestatario
+        unsigned int posicion = listar(almacen, "prestatarios");
+        Prestatario *seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
+        string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ", true);
+        string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ", true);
+        (*seleccionado).nombre = nuevo_nombre;
+        (*seleccionado).apellido = nuevo_apellido;
+        mostrar_prestatario(*seleccionado);
         break;
-      case 16:
+      }
+      case 16: {
         //eliminar prestatario
+        unsigned int posicion = listar(almacen, "prestatarios");
+        Prestatario *seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
+        bool valido = validar_eliminacion_prestatario(*seleccionado, almacen.prestamos);
+        if (valido) {
+            borrar_prestatario(almacen.prestatarios, posicion);
+        } else {
+            aviso("El prestatario no puede eliminarse debido a que hay préstamos pendientes.");
+        }
         break;
-      case 21:
+      }
+      case 21: {
         //agreagar prestamo
+        Categoria *categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ", true);
+        Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ", true);
+        string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ", true);
+        Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
+        almacenar_prestamo(almacen.prestamos, prestamo);
+        mostrar_prestamo(prestamo);
         break;
+      }
       case 22:
         //modificar prestamo
         break;
@@ -293,4 +484,5 @@ int main() {
 
   return 0;
 }
+
 
