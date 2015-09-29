@@ -74,7 +74,7 @@ Prestamo crear_prestamo(Categoria *categoria, Prestatario *prestatario, string d
     *  crea una variable del tipo Prestamo utilizando la descripcion, categoria, prestamo y el codigo pasados por parametro
   */
   Categoria cat = {0, "una categoria"};
-  Prestatario prest = {0, "un prestatario"};
+  Prestatario prest = {0, "apellido", "nombre"};
   Prestamo prestamo = {&cat, &prest, "un prestamo", true};
   return prestamo;
 }
@@ -369,8 +369,7 @@ Categoria* pedir_categoria(Lista_de_categorias &categorias, string texto_a_mostr
    * se valida la existencia del codigo
    * si no es valido se vuelve a repetir el proceso
   */
-  Categoria categoria = {0, "una categoria"};
-  return &categoria;
+  return &categorias.lista[0];
 }
 
 /*
@@ -388,8 +387,7 @@ Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto
    * se valida la existencia del codigo
    * si no es valido se vuelve a repetir el proceso
   */
-  Prestatario prestatario = {0, "un nombre", "un apellido"};
-  return &prestatario;
+  return &prestatarios.lista[0];
 }
 
 struct Reporte {
