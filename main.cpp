@@ -62,12 +62,12 @@ Categoria crear_categoria(unsigned int codigo, string descripcion) {
    }
 
 /*
-PROPÓSITO: crear una categoria
+PROPÓSITO: crear un prestamo
 PARÁMETROS:
     categoria: puntero a una categoria
     prestatario: puntero a un prestatario
     descripcion: el campo descripcion del prestamo (precondicion: cadena no vacia)
-RETORNO: una categoria
+RETORNO: un prestamo
 */
 Prestamo crear_prestamo(Categoria *categoria, Prestatario *prestatario, string descripcion) {
   /*
@@ -79,18 +79,32 @@ Prestamo crear_prestamo(Categoria *categoria, Prestatario *prestatario, string d
   return prestamo;
 }
 
+/*
+PROPÓSITO: crear un prestatario
+PARÁMETROS:
+    codigo: campo codigo de la categoria
+    nombre: el campo nombre del prestatario (precondicion: cadena no vacia)
+    apellido: el campo apellido del prestatario (precondicion: cadena no vacia)
+RETORNO: un prestatario
+*/
+Prestatario crear_prestatario(unsigned int codigo, string nombre, string apellido) {
+  /*
+   *  crea una variable del tipo Prestatario utilizando el nombre, apellido y el codigo pasados por parametro
+  */
+  Prestatario prestatario = {0, "nombre", "apellido"};
+  return prestatario;
+}
+
 void mostrar_categoria(Categoria &categoria) {
-  cout << categoria.codigo << " - " << categoria.descripcion << endl;
+  cout << "CATEGORIA: " << categoria.codigo << " - " << categoria.descripcion << endl;
 }
 
 void mostrar_prestatario(Prestatario &prestatario) {
-  cout << prestatario.codigo << " - " << prestatario.apellido << ", " << prestatario.nombre << endl;
+  cout << "PRESTATARIO: " << prestatario.codigo << " - " << prestatario.apellido << ", " << prestatario.nombre << endl;
 }
 
 void mostrar_prestamo(Prestamo &prestamo) {
-  cout << "CATEGORIA: ";
   mostrar_categoria(*(prestamo.categoria));
-  cout << "PRESTATARIO: ";
   mostrar_prestatario(*(prestamo.prestatario));
   cout << "DESCRIPCION: " << prestamo.descripcion << endl;
 }
@@ -183,7 +197,7 @@ unsigned int obtener_codigo(Almacen &almancen, string almacen_especifico) {
 }
 
 /*
-PROPÓSITO: muestra una lista de categorias/prestaomos/prestatarios y pide al usuario que seleccione uno
+PROPÓSITO: muestra una lista de categorias/prestamos/prestatarios y pide al usuario que seleccione uno
 PARÁMETROS:
     alamcen: estructura donde se encuentra la informacion almacenada
     almacen_especifico: el campo del almacen que se va a utilizar para el proposito
@@ -305,23 +319,6 @@ Prestamo* pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
   return &prestamos.lista[0];
 }
 
-
-/*
-PROPÓSITO: crear un prestatario
-PARÁMETROS:
-    codigo: campo codigo de la categoria
-    nombre: el campo nombre del prestatario (precondicion: cadena no vacia)
-    apellido: el campo apellido del prestatario (precondicion: cadena no vacia)
-RETORNO: un prestatario
-*/
-Prestatario crear_prestatario(unsigned int codigo, string nombre, string apellido) {
-  /*
-   *  crea una variable del tipo Prestatario utilizando el nombre, apellido y el codigo pasados por parametro
-  */
-  Prestatario prestatario = {0, "nombre", "apellido"};
-  return prestatario;
-}
-
 struct Menu {
   int id;
   int cant_opciones;
@@ -329,13 +326,17 @@ struct Menu {
 };
 
 void dibujar_menu(Menu &menu) {
+  cout << "================================================================================" << endl;
   cout << "0 - Salir del programa" << endl;
+  cout << "================================================================================" << endl;
   for(int i=0; i < menu.cant_opciones; i++) {
     cout << i+1 << " - " << menu.opciones[i] << endl;
   }
   if (menu.id != 0) {
+    cout << "================================================================================" << endl;
     cout << "9 - Volver al menu principal" << endl;
   }
+  cout << "================================================================================" << endl;
 }
 
 /*
@@ -523,6 +524,7 @@ int main() {
   };
   Menu *menues[4]={&menu_0,&menu_1,&menu_2,&menu_3};
   int menu_actual = 0;
+  cout << endl << endl <<"+========================= Administración de Préstamos ========================+" << endl;
   do {
     switch (menu_actual*10 + opcion) {
       case 11: {
@@ -657,8 +659,10 @@ int main() {
         menu_actual = 0;
     }
     dibujar_menu(*menues[menu_actual]);
-    cout << "Ingrese opcion: ";
+    cout << "[Ingrese una opción]: ";
     cin >> opcion;
+    cout << "--------------------------------------------------------------------------------" << endl;
+    cout << endl << endl;
   } while (opcion != 0);
 
   return 0;
