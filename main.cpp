@@ -6,6 +6,7 @@ using namespace std;
 int const CANTIDAD_CATEGORIAS = 200;
 int const CANTIDAD_PRESTAMOS = 200;
 int const CANTIDAD_PRESTATARIOS = 200;
+string const SIN_ELEMENTOS = "No hay elementos para realizar esta operacion";
 
 struct Categoria {
   unsigned int codigo;
@@ -521,7 +522,6 @@ int pedir_opcion(string texto_a_mostrar){
 
 int main() {
   Almacen almacen = {};
-  crear_categorias_de_ejemplo(almacen);
 
   int opcion = -1;
   Menu menu_0 = {0, 3, {
@@ -564,6 +564,7 @@ int main() {
         break;
       }
       case 12: {
+        if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar categoria
         unsigned int posicion = listar(almacen, "categorias");
         Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
@@ -573,6 +574,7 @@ int main() {
         break;
       }
       case 13: {
+        if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         // eliminar categoria
         unsigned int posicion = listar(almacen, "categorias");
         Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
@@ -595,6 +597,7 @@ int main() {
         break;
       }
       case 15:{
+        if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar prestatario
         unsigned int posicion = listar(almacen, "prestatarios");
         Prestatario *seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
@@ -606,6 +609,7 @@ int main() {
         break;
       }
       case 16: {
+        if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //eliminar prestatario
         unsigned int posicion = listar(almacen, "prestatarios");
         Prestatario *seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
@@ -628,6 +632,7 @@ int main() {
         break;
       }
       case 22: {
+        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar prestamo
         unsigned int posicion = listar(almacen, "prestamo");
         Prestamo *seleccionado = pedir_prestamo(almacen.prestamos, posicion);
@@ -637,6 +642,7 @@ int main() {
         break;
       }
       case 23: {
+        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //eliminar prestamo
         unsigned int posicion = listar(almacen, "prestamos");
         Prestamo *seleccionado = pedir_prestamo(almacen.prestamos, posicion);
@@ -645,6 +651,7 @@ int main() {
         break;
       }
       case 24: {
+        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //devolver prestamo
         unsigned int posicion = listar(almacen, "prestatario");
         Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, posicion);
@@ -654,12 +661,14 @@ int main() {
         break;
       }
       case 31: {
+        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //cant obj prestados por cat
         Lista_de_reporte reportes = cantidad_prestamos_por_categoria(almacen);
         mostrar_reportes(reportes);
         break;
       }
       case 32: {
+        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //list prestamo por cat
         unsigned int posicion = listar(almacen, "categorias");
         Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
@@ -668,6 +677,7 @@ int main() {
         break;
       }
       case 33: {
+        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //list ordenado prestamo por cat o prestatario
         string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?");
         Lista_de_prestamos pendientes = prestamos_pendientes_segun_criterio(almacen, campo);
@@ -675,7 +685,7 @@ int main() {
         break;
       }
       case 34: {
-        //list prestatario la menos un obj prestado
+        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         listar_prestatarios_con_prestamos_pendientes(almacen);
         break;
       }
