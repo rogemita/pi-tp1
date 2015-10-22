@@ -116,11 +116,12 @@ PARÁMETROS:
 RETORNO: un booleano
 */
 bool validar_eliminacion_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
-    /*
-    * Recorre y busca el codigo de la categoria dada en la lista de prestamos
-    * si lo encuentra devuelve false, sino devuelve true
-    */
-    return true;
+    bool valido = true;
+    for (unsigned int i = 0; i < prestamos.longitud; i++) {
+        valido = &categoria != prestamos.lista[i].categoria;
+        if (!valido) { break; }
+    }
+    return valido;
 }
 
 /*
@@ -145,11 +146,10 @@ PARÁMETROS:
     posicion: la posicion de la categoria a eliminar
 */
 void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
-  /*
-   * itera sobre la lista de categorias buscando la posicion dada
-   * cuando la encuentra la pisa realizando un corrimiento de ser necesario, si no la ignora
-   * y decrementa en una unidad a la longitud de la lista de categorias
-   */
+    categorias.longitud--;
+    for (unsigned int i = posicion; i < categorias.longitud; i++) {
+        categorias.lista[i] = categorias.lista[i+1];
+    }
 }
 
 /*
@@ -521,6 +521,7 @@ int pedir_opcion(string texto_a_mostrar){
 
 int main() {
   Almacen almacen = {};
+  crear_categorias_de_ejemplo(almacen);
 
   int opcion = -1;
   Menu menu_0 = {0, 3, {
