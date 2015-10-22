@@ -54,12 +54,9 @@ PARÁMETROS:
 RETORNO: una categoria
 */
 Categoria crear_categoria(unsigned int codigo, string descripcion) {
-    /*
-     *  crea una variable del tipo Categoria utilizando la descripcion y el codigo pasados por parametro
-    */
-     Categoria categoria = {0, "una categoria"};
-     return categoria;
-   }
+    Categoria categoria = {codigo, descripcion};
+    return categoria;
+}
 
 /*
 PROPÓSITO: crear un prestamo
@@ -70,13 +67,8 @@ PARÁMETROS:
 RETORNO: un prestamo
 */
 Prestamo crear_prestamo(Categoria *categoria, Prestatario *prestatario, string descripcion) {
-  /*
-    *  crea una variable del tipo Prestamo utilizando la descripcion, categoria, prestamo y el codigo pasados por parametro
-  */
-  Categoria cat = {0, "una categoria"};
-  Prestatario prest = {0, "apellido", "nombre"};
-  Prestamo prestamo = {&cat, &prest, "un prestamo", true};
-  return prestamo;
+    Prestamo prestamo = {categoria, prestatario, descripcion, true};
+    return prestamo;
 }
 
 /*
@@ -88,25 +80,22 @@ PARÁMETROS:
 RETORNO: un prestatario
 */
 Prestatario crear_prestatario(unsigned int codigo, string nombre, string apellido) {
-  /*
-   *  crea una variable del tipo Prestatario utilizando el nombre, apellido y el codigo pasados por parametro
-  */
-  Prestatario prestatario = {0, "nombre", "apellido"};
-  return prestatario;
+    Prestatario prestatario = {codigo, nombre, apellido};
+    return prestatario;
 }
 
 void mostrar_categoria(Categoria &categoria) {
-  cout << "CATEGORIA: " << categoria.codigo << " - " << categoria.descripcion << endl;
+    cout << "CATEGORIA: " << categoria.codigo << " - " << categoria.descripcion << endl;
 }
 
 void mostrar_prestatario(Prestatario &prestatario) {
-  cout << "PRESTATARIO: " << prestatario.codigo << " - " << prestatario.apellido << ", " << prestatario.nombre << endl;
+    cout << "PRESTATARIO: " << prestatario.codigo << " - " << prestatario.apellido << ", " << prestatario.nombre << endl;
 }
 
 void mostrar_prestamo(Prestamo &prestamo) {
-  mostrar_categoria(*(prestamo.categoria));
-  mostrar_prestatario(*(prestamo.prestatario));
-  cout << "DESCRIPCION: " << prestamo.descripcion << endl;
+    mostrar_categoria(*(prestamo.categoria));
+    mostrar_prestatario(*(prestamo.prestatario));
+    cout << "DESCRIPCION: " << prestamo.descripcion << endl;
 }
 
 /*
@@ -117,12 +106,12 @@ PARÁMETROS:
 RETORNO: un booleano
 */
 bool validar_eliminacion_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
-  /*
-   * Recorre y busca el codigo de la categoria dada en la lista de prestamos
-   * si lo encuentra devuelve false, sino devuelve true
-   */
-   return true;
- }
+    /*
+    * Recorre y busca el codigo de la categoria dada en la lista de prestamos
+    * si lo encuentra devuelve false, sino devuelve true
+    */
+    return true;
+}
 
 /*
 PROPÓSITO: Verificar que no exista ningun prestamo con el codigo del prestatario dado
@@ -132,12 +121,12 @@ PARÁMETROS:
 RETORNO: un booleano
 */
 bool validar_eliminacion_prestatario(Prestatario &prestatario, Lista_de_prestamos &prestamos) {
-  /*
-   * Recorre y busca el codigo del prestatario dado en la lista de prestamos
-   * si lo encuentra devuelve false, sino devuelve true
-   */
-   return true;
- }
+    /*
+    * Recorre y busca el codigo del prestatario dado en la lista de prestamos
+    * si lo encuentra devuelve false, sino devuelve true
+    */
+    return true;
+}
 
 /*
 PROPÓSITO: borrar una categoria
@@ -182,21 +171,6 @@ void borrar_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
 }
 
 /*
-PROPÓSITO: generar un codigo automatico para la estructura a crear
-PARÁMETROS:
-    alamcen: estructura donde se encuentra la informacion almacenada
-    almacen_especifico: el campo del almacen que se va a utilizar para el proposito
-RETORNO: un numero positivo
-*/
-unsigned int obtener_codigo(Almacen &almancen, string almacen_especifico) {
-  /*
-   * segun el almacen_especifico buscar la lista en el almacen y pedirle la longitud y restarle 1
-   */
-   unsigned int codigo = 0;
-   return codigo;
-}
-
-/*
 PROPÓSITO: muestra una lista de categorias/prestamos/prestatarios y pide al usuario que seleccione uno
 PARÁMETROS:
     alamcen: estructura donde se encuentra la informacion almacenada
@@ -204,11 +178,11 @@ PARÁMETROS:
 RETORNO: un numero positivo
 */
 unsigned int listar(Almacen &almacen, string almacen_especifico) {
-  /*
-   * segun el alamacen_especifico se recorre y muestra con una estructura de bucle la lista de esta entidad
-   * el usuario ingresa el orden y retorna el numero de orden - 1
-  */
-   return 0;
+    /*
+    * segun el alamacen_especifico se recorre y muestra con una estructura de bucle la lista de esta entidad
+    * el usuario ingresa el orden y retorna el numero de orden - 1
+    */
+    return 0;
  }
 
 /*
@@ -259,11 +233,9 @@ PARÁMETROS:
     categoria: la categoria a almacenar
 */
 void almacenar_categoria(Lista_de_categorias &categorias, Categoria &categoria) {
-  /*
-   * agrega una nueva categoria en la lista donde se almacenan las categorias
-   * Ademas mantiene la longitud de la lista de categorias
-   */
-  categorias.lista[0] = categoria;
+    int longitud = categorias.longitud;
+    categorias.lista[longitud] = categoria;
+    categorias.longitud++;
 }
 
 /*
@@ -319,6 +291,32 @@ Prestamo* pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
   return &prestamos.lista[0];
 }
 
+/*
+PROPÓSITO: generar un codigo automatico para la estructura a crear
+PARÁMETROS:
+    alamcen: estructura donde se encuentra la informacion almacenada
+    almacen_especifico: el campo del almacen que se va a utilizar para el proposito
+RETORNO: un numero positivo
+*/
+unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico) {
+    unsigned int codigo = 0;
+    if (almacen_especifico == "categorias") {
+        int longitud = almacen.categorias.longitud;
+        if (longitud > 0) {
+            Categoria *ultima = pedir_categoria(almacen.categorias, longitud - 1);
+            codigo = ultima->codigo + 1;
+        }
+    }
+    if (almacen_especifico == "prestatarios") {
+        int longitud = almacen.prestatarios.longitud;
+        if (longitud > 0) {
+            Prestatario *ultimo = pedir_prestatario(almacen.prestatarios, longitud - 1);
+            codigo = ultimo->codigo + 1;
+        }
+    }
+    return codigo;
+}
+
 struct Menu {
   int id;
   int cant_opciones;
@@ -346,13 +344,11 @@ PARÁMETROS:
     requerido: bool que indica si este campo es o no obligatorio
 RETORNO: una cadena
 */
-string pedir_dato(string texto_a_mostrar, bool requerido) {
-  /*
-   * solicita al usuario el ingreso de una cadena por teclado,
-   * verifica si es obligatoria o no segun el parametro 'requerido', volviendo a solicitarlo de ser necesario
-   * luego de la validacion retorna la cadena ingresada
-  */
-  return "una cadena";
+string pedir_dato(string texto_a_mostrar) {
+    string cadena;
+    cout << texto_a_mostrar;
+    cin >> cadena;
+    return cadena;
 }
 
 /*
@@ -493,6 +489,19 @@ void aviso(string mensaje) {
   cout << mensaje << endl;
 }
 
+int pedir_opcion(){
+    bool condicion;
+    int n;
+    do {
+        cout << "[Ingrese una opción]: ";
+        cin >> n;
+        condicion = cin.fail();
+        cin.clear();
+        cin.ignore(INT_MAX, '\n');
+    } while(condicion);
+    return n;
+}
+
 int main() {
   Almacen almacen = {};
 
@@ -529,18 +538,21 @@ int main() {
     switch (menu_actual*10 + opcion) {
       case 11: {
         //agregar categoria
-        string descripcion = pedir_dato("Ingrese la descripción de la categoría: ", true);
+        string descripcion = pedir_dato("Ingrese la descripción de la categoría: ");
         unsigned int codigo = obtener_codigo(almacen, "categorias");
         Categoria categoria = crear_categoria(codigo, descripcion);
         almacenar_categoria(almacen.categorias, categoria);
         mostrar_categoria(categoria);
+        for(int i = 0; i < almacen.categorias.longitud;i++) {
+            mostrar_categoria(almacen.categorias.lista[i]);
+        }
         break;
       }
       case 12: {
         //modificar categoria
         unsigned int posicion = listar(almacen, "categorias");
         Categoria *seleccionada = pedir_categoria(almacen.categorias, posicion);
-        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ", true);
+        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
         (*seleccionada).descripcion = nueva_descripcion;
         mostrar_categoria(*seleccionada);
         break;
@@ -559,8 +571,8 @@ int main() {
       }
       case 14:{
         //agregar prestatario
-        string nombre = pedir_dato("Ingrese el nombre del prestatario: ", true);
-        string apellido = pedir_dato("Ingrese el apellido del prestatario: ", true);
+        string nombre = pedir_dato("Ingrese el nombre del prestatario: ");
+        string apellido = pedir_dato("Ingrese el apellido del prestatario: ");
         unsigned int codigo = obtener_codigo(almacen, "prestatario");
         Prestatario prestatario = crear_prestatario(codigo, nombre, apellido);
         almacenar_prestatario(almacen.prestatarios, prestatario);
@@ -571,8 +583,8 @@ int main() {
         //modificar prestatario
         unsigned int posicion = listar(almacen, "prestatarios");
         Prestatario *seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
-        string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ", true);
-        string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ", true);
+        string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ");
+        string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
         (*seleccionado).nombre = nuevo_nombre;
         (*seleccionado).apellido = nuevo_apellido;
         mostrar_prestatario(*seleccionado);
@@ -594,7 +606,7 @@ int main() {
         //agreagar prestamo
         Categoria *categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
         Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
-        string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ", true);
+        string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ");
         Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
         almacenar_prestamo(almacen.prestamos, prestamo);
         mostrar_prestamo(prestamo);
@@ -604,7 +616,7 @@ int main() {
         //modificar prestamo
         unsigned int posicion = listar(almacen, "prestamo");
         Prestamo *seleccionado = pedir_prestamo(almacen.prestamos, posicion);
-        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ", true);
+        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
         (*seleccionado).descripcion = nueva_descripcion;
         mostrar_prestamo(*seleccionado);
         break;
@@ -642,7 +654,7 @@ int main() {
       }
       case 33: {
         //list ordenado prestamo por cat o prestatario
-        string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?", true);
+        string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?");
         Lista_de_prestamos pendientes = prestamos_pendientes_segun_criterio(almacen, campo);
         mostrar_prestamos(pendientes);
         break;
@@ -659,8 +671,7 @@ int main() {
         menu_actual = 0;
     }
     dibujar_menu(*menues[menu_actual]);
-    cout << "[Ingrese una opción]: ";
-    cin >> opcion;
+    opcion = pedir_opcion();
     cout << "--------------------------------------------------------------------------------" << endl;
     cout << endl << endl;
   } while (opcion != 0);
