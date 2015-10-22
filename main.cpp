@@ -46,6 +46,16 @@ struct Almacen {
   Lista_de_prestamos prestamos;
 };
 
+int pedir_opcion(string texto_a_mostrar);
+
+void crear_categorias_de_ejemplo(Almacen &almacen){
+    almacen.categorias = {};
+    almacen.categorias.lista[0] = {0, "a"};
+    almacen.categorias.lista[1] = {1, "b"};
+    almacen.categorias.lista[2] = {2, "c"};
+    almacen.categorias.longitud = 3;
+}
+
 /*
 PROPÓSITO: crear una categoria
 PARÁMETROS:
@@ -178,11 +188,21 @@ PARÁMETROS:
 RETORNO: un numero positivo
 */
 unsigned int listar(Almacen &almacen, string almacen_especifico) {
-    /*
-    * segun el alamacen_especifico se recorre y muestra con una estructura de bucle la lista de esta entidad
-    * el usuario ingresa el orden y retorna el numero de orden - 1
-    */
-    return 0;
+    int longitud = 0;
+    int seleccion = 0;
+    if (almacen_especifico == "categorias") { longitud = almacen.categorias.longitud; }
+    if (almacen_especifico == "prestatarios") { longitud = almacen.prestatarios.longitud; }
+    if (almacen_especifico == "prestamos") { longitud = almacen.prestamos.longitud; }
+    for (int i = 0; i < longitud; i++) {
+        cout << i + 1 << " -> ";
+        if (almacen_especifico == "categorias") { mostrar_categoria(almacen.categorias.lista[i]); }
+        if (almacen_especifico == "prestatarios") { mostrar_prestatario(almacen.prestatarios.lista[i]); }
+        if (almacen_especifico == "prestamos") { mostrar_prestamo(almacen.prestamos.lista[i]); }
+    }
+    do {
+        seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
+    } while (seleccion > longitud);
+    return seleccion - 1;
  }
 
 /*
@@ -258,11 +278,8 @@ PARÁMETROS:
     categorias: el almacen de categorias
     posicion: la posicion de la categoria
 */
-Categoria* pedir_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
-  /*
-   * recorrer la lista de categorias hasta la posicion dada y devolver esa posicion de memoria
-   */
-  return &categorias.lista[0];
+Categoria& pedir_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
+    return categorias.lista[posicion];
 }
 
 /*
@@ -303,8 +320,8 @@ unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico) {
     if (almacen_especifico == "categorias") {
         int longitud = almacen.categorias.longitud;
         if (longitud > 0) {
-            Categoria *ultima = pedir_categoria(almacen.categorias, longitud - 1);
-            codigo = ultima->codigo + 1;
+            Categoria ultima = pedir_categoria(almacen.categorias, longitud - 1);
+            codigo = ultima.codigo + 1;
         }
     }
     if (almacen_especifico == "prestatarios") {
@@ -489,11 +506,11 @@ void aviso(string mensaje) {
   cout << mensaje << endl;
 }
 
-int pedir_opcion(){
+int pedir_opcion(string texto_a_mostrar){
     bool condicion;
     int n;
     do {
-        cout << "[Ingrese una opción]: ";
+        cout << texto_a_mostrar;
         cin >> n;
         condicion = cin.fail();
         cin.clear();
@@ -543,25 +560,22 @@ int main() {
         Categoria categoria = crear_categoria(codigo, descripcion);
         almacenar_categoria(almacen.categorias, categoria);
         mostrar_categoria(categoria);
-        for(int i = 0; i < almacen.categorias.longitud;i++) {
-            mostrar_categoria(almacen.categorias.lista[i]);
-        }
         break;
       }
       case 12: {
         //modificar categoria
         unsigned int posicion = listar(almacen, "categorias");
-        Categoria *seleccionada = pedir_categoria(almacen.categorias, posicion);
+        Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
         string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
-        (*seleccionada).descripcion = nueva_descripcion;
-        mostrar_categoria(*seleccionada);
+        seleccionada.descripcion = nueva_descripcion;
+        mostrar_categoria(seleccionada);
         break;
       }
       case 13: {
         // eliminar categoria
         unsigned int posicion = listar(almacen, "categorias");
-        Categoria *seleccionada = pedir_categoria(almacen.categorias, posicion);
-        bool valido = validar_eliminacion_categoria(*seleccionada, almacen.prestamos);
+        Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
+        bool valido = validar_eliminacion_categoria(seleccionada, almacen.prestamos);
         if (valido) {
           borrar_categoria(almacen.categorias, posicion);
         } else {
@@ -647,8 +661,8 @@ int main() {
       case 32: {
         //list prestamo por cat
         unsigned int posicion = listar(almacen, "categorias");
-        Categoria* seleccionada = pedir_categoria(almacen.categorias, posicion);
-        Lista_de_prestamos reporte = prestamos_por_categoria(almacen.prestamos, *seleccionada);
+        Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
+        Lista_de_prestamos reporte = prestamos_por_categoria(almacen.prestamos, seleccionada);
         mostrar_prestamos(reporte);
         break;
       }
@@ -671,7 +685,7 @@ int main() {
         menu_actual = 0;
     }
     dibujar_menu(*menues[menu_actual]);
-    opcion = pedir_opcion();
+    opcion = pedir_opcion("[Ingrese una opción]: ");
     cout << "--------------------------------------------------------------------------------" << endl;
     cout << endl << endl;
   } while (opcion != 0);
