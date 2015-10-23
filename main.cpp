@@ -49,12 +49,20 @@ struct Almacen {
 
 int pedir_opcion(string texto_a_mostrar);
 
-void crear_categorias_de_ejemplo(Almacen &almacen){
+void crear_categorias_de_ejemplo(Almacen &almacen) {
     almacen.categorias = {};
     almacen.categorias.lista[0] = {0, "a"};
     almacen.categorias.lista[1] = {1, "b"};
     almacen.categorias.lista[2] = {2, "c"};
     almacen.categorias.longitud = 3;
+}
+
+void crear_prestatarios_de_ejemplo(Almacen &almacen) {
+    almacen.prestatarios = {};
+    almacen.prestatarios.lista[0] = {0, "a", "A"};
+    almacen.prestatarios.lista[1] = {1, "b", "B"};
+    almacen.prestatarios.lista[2] = {2, "c", "C"};
+    almacen.prestatarios.longitud = 3;
 }
 
 /*
@@ -133,11 +141,12 @@ PARÁMETROS:
 RETORNO: un booleano
 */
 bool validar_eliminacion_prestatario(Prestatario &prestatario, Lista_de_prestamos &prestamos) {
-    /*
-    * Recorre y busca el codigo del prestatario dado en la lista de prestamos
-    * si lo encuentra devuelve false, sino devuelve true
-    */
-    return true;
+    bool valido = true;
+    for (unsigned int i = 0; i < prestamos.longitud; i++) {
+        valido = &prestatario != prestamos.lista[i].prestatario;
+        if (!valido) { break; }
+    }
+    return valido;
 }
 
 /*
@@ -160,11 +169,10 @@ PARÁMETROS:
     posicion: la posicion del prestario a eliminar
 */
 void borrar_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
-  /*
-   * itera sobre la lista de prestatarios buscando la posicion dada
-   * cuando la encuentra la pisa realizando un corrimiento de ser necesario, si no la ignora
-   * y decrementa en una unidad a la longitud de la lista de prestatarios
-   */
+    prestatarios.longitud--;
+    for (unsigned int i = posicion; i < prestatarios.longitud; i++) {
+        prestatarios.lista[i] = prestatarios.lista[i+1];
+    }
 }
 
 /*
@@ -213,13 +221,13 @@ PARÁMETROS:
     prestatario: prestatario del cual seleccionar los prestamos
 RETORNO: un puntero a un prestamo
 */
-Prestamo* seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario &prestatario) {
+Prestamo& seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario &prestatario) {
   /*
    * se recorre y muestra con una estructura de bucle la lista de prestamos de un prestatario
    * seleccionado y se le pide al usuario que eliga uno de las opciones listadas
    * el usuario ingresa la seleccion y se valida que sea correcta y lo devuelve
   */
-  return &prestamos.lista[0];
+  return prestamos.lista[0];
 }
 
 /*
@@ -266,11 +274,9 @@ PARÁMETROS:
     prestatario: el prestatario a almacenar
 */
 void almacenar_prestatario(Lista_de_prestatarios &prestatarios, Prestatario &prestatario) {
-  /*
-   * agrega un nuevo prestatario en la lista donde se almacenan los prestatarios
-   * Ademas mantiene la longitud de la lista de prestatarios
-   */
-  prestatarios.lista[0] = prestatario;
+    int longitud = prestatarios.longitud;
+    prestatarios.lista[longitud] = prestatario;
+    prestatarios.longitud++;
 }
 
 /*
@@ -289,11 +295,8 @@ PARÁMETROS:
     prestatarios: el almacen de prestatarios
     posicion: la posicion del prestatario
 */
-Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
-  /*
-   * recorrer el lista de prestatarios hasta la posicion dada y devolver esa posicion de memoria
-   */
-  return &prestatarios.lista[0];
+Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
+    return prestatarios.lista[posicion];
 }
 
 /*
@@ -302,11 +305,8 @@ PARÁMETROS:
     prestamos: el almacen de prestamos
     posicion: la posicion del prestamo
 */
-Prestamo* pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
-  /*
-   * recorrer la lista de prestamos hasta la posicion dada y devolver esa posicion de memoria
-  */
-  return &prestamos.lista[0];
+Prestamo& pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
+    return prestamos.lista[posicion];
 }
 
 /*
@@ -328,8 +328,8 @@ unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico) {
     if (almacen_especifico == "prestatarios") {
         int longitud = almacen.prestatarios.longitud;
         if (longitud > 0) {
-            Prestatario *ultimo = pedir_prestatario(almacen.prestatarios, longitud - 1);
-            codigo = ultimo->codigo + 1;
+            Prestatario ultimo = pedir_prestatario(almacen.prestatarios, longitud - 1);
+            codigo = ultimo.codigo + 1;
         }
     }
     return codigo;
@@ -590,7 +590,7 @@ int main() {
         //agregar prestatario
         string nombre = pedir_dato("Ingrese el nombre del prestatario: ");
         string apellido = pedir_dato("Ingrese el apellido del prestatario: ");
-        unsigned int codigo = obtener_codigo(almacen, "prestatario");
+        unsigned int codigo = obtener_codigo(almacen, "prestatarios");
         Prestatario prestatario = crear_prestatario(codigo, nombre, apellido);
         almacenar_prestatario(almacen.prestatarios, prestatario);
         mostrar_prestatario(prestatario);
@@ -600,20 +600,20 @@ int main() {
         if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar prestatario
         unsigned int posicion = listar(almacen, "prestatarios");
-        Prestatario *seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
+        Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
         string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ");
         string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
-        (*seleccionado).nombre = nuevo_nombre;
-        (*seleccionado).apellido = nuevo_apellido;
-        mostrar_prestatario(*seleccionado);
+        seleccionado.nombre = nuevo_nombre;
+        seleccionado.apellido = nuevo_apellido;
+        mostrar_prestatario(seleccionado);
         break;
       }
       case 16: {
         if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //eliminar prestatario
         unsigned int posicion = listar(almacen, "prestatarios");
-        Prestatario *seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
-        bool valido = validar_eliminacion_prestatario(*seleccionado, almacen.prestamos);
+        Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
+        bool valido = validar_eliminacion_prestatario(seleccionado, almacen.prestamos);
         if (valido) {
           borrar_prestatario(almacen.prestatarios, posicion);
         } else {
@@ -635,17 +635,16 @@ int main() {
         if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar prestamo
         unsigned int posicion = listar(almacen, "prestamo");
-        Prestamo *seleccionado = pedir_prestamo(almacen.prestamos, posicion);
+        Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
         string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
-        (*seleccionado).descripcion = nueva_descripcion;
-        mostrar_prestamo(*seleccionado);
+        seleccionado.descripcion = nueva_descripcion;
+        mostrar_prestamo(seleccionado);
         break;
       }
       case 23: {
         if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //eliminar prestamo
         unsigned int posicion = listar(almacen, "prestamos");
-        Prestamo *seleccionado = pedir_prestamo(almacen.prestamos, posicion);
         borrar_prestamo(almacen.prestamos, posicion);
         aviso("El prestamo fue eliminado con exito.");
         break;
@@ -654,9 +653,9 @@ int main() {
         if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //devolver prestamo
         unsigned int posicion = listar(almacen, "prestatario");
-        Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, posicion);
-        Prestamo *seleccionado = seleccionar_prestamo(almacen.prestamos, *prestatario);
-        devolver_prestamo(*seleccionado);
+        Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, posicion);
+        Prestamo& seleccionado = seleccionar_prestamo(almacen.prestamos, prestatario);
+        devolver_prestamo(seleccionado);
         aviso("El prestamo fue devuelto con exito");
         break;
       }
