@@ -48,6 +48,7 @@ struct Almacen {
 };
 
 int pedir_opcion(string texto_a_mostrar);
+bool pedir_confirmacion(string texto_a_mostrar);
 
 void crear_categorias_de_ejemplo(Almacen &almacen) {
     almacen.categorias = {};
@@ -85,8 +86,8 @@ PARÁMETROS:
     descripcion: el campo descripcion del prestamo (precondicion: cadena no vacia)
 RETORNO: un prestamo
 */
-Prestamo crear_prestamo(Categoria *categoria, Prestatario *prestatario, string descripcion) {
-    Prestamo prestamo = {categoria, prestatario, descripcion, true};
+Prestamo crear_prestamo(Categoria &categoria, Prestatario &prestatario, string descripcion) {
+    Prestamo prestamo = {&categoria, &prestatario, descripcion, true};
     return prestamo;
 }
 
@@ -199,7 +200,7 @@ RETORNO: un numero positivo
 unsigned int listar(Almacen &almacen, string almacen_especifico) {
     int longitud = 0;
     int seleccion = 0;
-    if (almacen_especifico == "categorias") { longitud = almacen.categorias.longitud; }
+    if (almacen_especifico == "categorias") {  }
     if (almacen_especifico == "prestatarios") { longitud = almacen.prestatarios.longitud; }
     if (almacen_especifico == "prestamos") { longitud = almacen.prestamos.longitud; }
     for (int i = 0; i < longitud; i++) {
@@ -213,6 +214,32 @@ unsigned int listar(Almacen &almacen, string almacen_especifico) {
     } while (seleccion > longitud);
     return seleccion - 1;
  }
+
+unsigned int listar(Lista_de_categorias &categorias) {
+    int longitud = categorias.longitud;;
+    int seleccion = 0;
+    for (int i = 0; i < longitud; i++) {
+        cout << i + 1 << " -> ";
+        mostrar_categoria(categorias.lista[i]);
+    }
+    do {
+        seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
+    } while (seleccion > longitud);
+    return seleccion - 1;
+}
+
+unsigned int listar(Lista_de_prestatarios &prestatarios) {
+    int longitud = prestatarios.longitud;;
+    int seleccion = 0;
+    for (int i = 0; i < longitud; i++) {
+        cout << i + 1 << " -> ";
+        mostrar_prestatario(prestatarios.lista[i]);
+    }
+    do {
+        seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
+    } while (seleccion > longitud);
+    return seleccion - 1;
+}
 
 /*
 PROPÓSITO: muestra una lista de prestamos de un prestatario y pide al usuario que seleccione uno
@@ -248,11 +275,9 @@ PARÁMETROS:
     prestamo: el prestamo a almacenar
 */
 void almacenar_prestamo(Lista_de_prestamos &prestamos, Prestamo &prestamo) {
-  /*
-   * agrega un nuevo prestamo en la lista donde se almacenan los prestamos
-   * Ademas mantiene la longitud de la lista de prestamos
-  */
-  prestamos.lista[0] = prestamo;
+    int longitud = prestamos.longitud;
+    prestamos.lista[longitud] = prestamo;
+    prestamos.longitud++;
 }
 
 /*
@@ -369,22 +394,47 @@ string pedir_dato(string texto_a_mostrar) {
     return cadena;
 }
 
+int existe_categoria(Lista_de_categorias &categorias, int codigo) {
+    int posicion = -1;
+    for (int i = 0; i < categorias.longitud; i++) {
+        if (categorias.lista[i].codigo == codigo) {
+            posicion = i;
+            break;
+        }
+    }
+    return posicion;
+}
+
+int existe_prestatario(Lista_de_prestatarios &prestatarios, int codigo) {
+    int posicion = -1;
+    for (int i = 0; i < prestatarios.longitud; i++) {
+        if (prestatarios.lista[i].codigo == codigo) {
+            posicion = i;
+            break;
+        }
+    }
+    return posicion;
+}
+
 /*
 PROPÓSITO: obtener una categoria existente, solicitando al usuario ingresar el codigo
 PARÁMETROS:
     categorias: Lista de categorias para listar
     texto_a_mostrar: texto de referencia a lo que se debe ingresar
-    requerido: bool que indica si este campo es o no obligatorio
 RETORNO: un unsigned int
 */
-Categoria* pedir_categoria(Lista_de_categorias &categorias, string texto_a_mostrar) {
-  /*
-   * Pide listar las categorias existentes, si el usuario indica que si
-   * muestra el texto_a_mostrar en la pantalla y recibe un codigo
-   * se valida la existencia del codigo
-   * si no es valido se vuelve a repetir el proceso
-  */
-  return &categorias.lista[0];
+Categoria& pedir_categoria(Lista_de_categorias &categorias, string texto_a_mostrar) {
+    bool confirmacion = pedir_confirmacion("Desea listar las categorias existentes? [s/n]: ");
+    int posicion;
+    if (confirmacion) {
+        posicion = listar(categorias);
+    } else {
+        do {
+            int codigo = pedir_opcion(texto_a_mostrar);
+            posicion = existe_categoria(categorias, codigo);
+        } while (posicion == -1);
+    }
+    return pedir_categoria(categorias, posicion);
 }
 
 /*
@@ -392,17 +442,20 @@ PROPÓSITO: obtener un prestatario existente, solicitando al usuario ingresar el
 PARÁMETROS:
     prestatarios: Lista de prestatarios para listar
     texto_a_mostrar: texto de referencia a lo que se debe ingresar
-    requerido: bool que indica si este campo es o no obligatorio
 RETORNO: un unsigned int
 */
-Prestatario* pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto_a_mostrar) {
-  /*
-   * Pide listar los prestatarios existentes, si el usuario indica que si
-   * muestra el texto_a_mostrar en la pantalla y recibe un codigo
-   * se valida la existencia del codigo
-   * si no es valido se vuelve a repetir el proceso
-  */
-  return &prestatarios.lista[0];
+Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto_a_mostrar) {
+    bool confirmacion = pedir_confirmacion("Desea listar las prestatarios existentes? [s/n]: ");
+    int posicion;
+    if (confirmacion) {
+        posicion = listar(prestatarios);
+    } else {
+        do {
+            int codigo = pedir_opcion(texto_a_mostrar);
+            posicion = existe_prestatario(prestatarios, codigo);
+        } while (posicion == -1);
+    }
+    return pedir_prestatario(prestatarios, posicion);
 }
 
 struct Reporte {
@@ -520,8 +573,28 @@ int pedir_opcion(string texto_a_mostrar){
     return n;
 }
 
+bool pedir_confirmacion(string texto_a_mostrar){
+    bool condicion;
+    char confirmacion;
+    do {
+        cout << texto_a_mostrar;
+        confirmacion = cin.get();
+        condicion = cin.fail();
+        if (!condicion) {
+            tolower(confirmacion);
+            condicion = confirmacion == 's' || confirmacion == 'n';
+        }
+        cin.clear();
+        cin.ignore(256, '\n');
+    } while(!condicion);
+    return confirmacion == 's';
+}
+
 int main() {
   Almacen almacen = {};
+
+  crear_prestatarios_de_ejemplo(almacen);
+  crear_categorias_de_ejemplo(almacen);
 
   int opcion = -1;
   Menu menu_0 = {0, 3, {
@@ -622,9 +695,10 @@ int main() {
         break;
       }
       case 21: {
+        if (almacen.categorias.longitud == 0 || almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //agreagar prestamo
-        Categoria *categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
-        Prestatario *prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
+        Categoria& categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
+        Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
         string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ");
         Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
         almacenar_prestamo(almacen.prestamos, prestamo);
