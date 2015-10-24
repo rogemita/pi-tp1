@@ -183,40 +183,20 @@ PARÁMETROS:
     posicion: la posicion del prestamo a eliminar
 */
 void borrar_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
-  /*
-   * itera sobre la lista de prestamos buscando la posicion dada
-   * cuando la encuentra la pisa realizando un corrimiento de ser necesario, si no la ignora
-   * y decrementa en una unidad a la longitud de la lista de prestamos
-   */
+    prestamos.longitud--;
+    for (unsigned int i = posicion; i < prestamos.longitud; i++) {
+        prestamos.lista[i] = prestamos.lista[i+1];
+    }
 }
 
 /*
-PROPÓSITO: muestra una lista de categorias/prestamos/prestatarios y pide al usuario que seleccione uno
+PROPÓSITO: muestra una lista de categorias y pide al usuario que seleccione uno
 PARÁMETROS:
-    alamcen: estructura donde se encuentra la informacion almacenada
-    almacen_especifico: el campo del almacen que se va a utilizar para el proposito
+    categorias: estructura donde se encuentra la informacion almacenada de categorias
 RETORNO: un numero positivo
 */
-unsigned int listar(Almacen &almacen, string almacen_especifico) {
-    int longitud = 0;
-    int seleccion = 0;
-    if (almacen_especifico == "categorias") {  }
-    if (almacen_especifico == "prestatarios") { longitud = almacen.prestatarios.longitud; }
-    if (almacen_especifico == "prestamos") { longitud = almacen.prestamos.longitud; }
-    for (int i = 0; i < longitud; i++) {
-        cout << i + 1 << " -> ";
-        if (almacen_especifico == "categorias") { mostrar_categoria(almacen.categorias.lista[i]); }
-        if (almacen_especifico == "prestatarios") { mostrar_prestatario(almacen.prestatarios.lista[i]); }
-        if (almacen_especifico == "prestamos") { mostrar_prestamo(almacen.prestamos.lista[i]); }
-    }
-    do {
-        seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
-    } while (seleccion > longitud);
-    return seleccion - 1;
- }
-
 unsigned int listar(Lista_de_categorias &categorias) {
-    int longitud = categorias.longitud;;
+    int longitud = categorias.longitud;
     int seleccion = 0;
     for (int i = 0; i < longitud; i++) {
         cout << i + 1 << " -> ";
@@ -228,12 +208,37 @@ unsigned int listar(Lista_de_categorias &categorias) {
     return seleccion - 1;
 }
 
+/*
+PROPÓSITO: muestra una lista de prestatarios y pide al usuario que seleccione uno
+PARÁMETROS:
+    prestatarios: estructura donde se encuentra la informacion almacenada de prestatarios
+RETORNO: un numero positivo
+*/
 unsigned int listar(Lista_de_prestatarios &prestatarios) {
-    int longitud = prestatarios.longitud;;
+    int longitud = prestatarios.longitud;
     int seleccion = 0;
     for (int i = 0; i < longitud; i++) {
         cout << i + 1 << " -> ";
         mostrar_prestatario(prestatarios.lista[i]);
+    }
+    do {
+        seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
+    } while (seleccion > longitud);
+    return seleccion - 1;
+}
+
+/*
+PROPÓSITO: muestra una lista de prestamos y pide al usuario que seleccione uno
+PARÁMETROS:
+    prestamos: estructura donde se encuentra la informacion almacenada de prestamos
+RETORNO: un numero positivo
+*/
+unsigned int listar(Lista_de_prestamos &prestamos) {
+    int longitud = prestamos.longitud;
+    int seleccion = 0;
+    for (int i = 0; i < longitud; i++) {
+        cout << i + 1 << " -> ";
+        mostrar_prestamo(prestamos.lista[i]);
     }
     do {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
@@ -248,13 +253,34 @@ PARÁMETROS:
     prestatario: prestatario del cual seleccionar los prestamos
 RETORNO: un puntero a un prestamo
 */
-Prestamo& seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario &prestatario) {
+Prestamo& seleccionar_prestamo(Lista_de_prestamos const &prestamos, Prestatario const &prestatario) {
   /*
    * se recorre y muestra con una estructura de bucle la lista de prestamos de un prestatario
    * seleccionado y se le pide al usuario que eliga uno de las opciones listadas
    * el usuario ingresa la seleccion y se valida que sea correcta y lo devuelve
   */
-  return prestamos.lista[0];
+    int posiciones[CANTIDAD_PRESTAMOS];
+    Lista_de_prestamos prestamos_seleccionados;
+    int j = 0;
+    for (unsigned int i = 0; i < prestamos.longitud; i++) {
+        if (&prestatario == prestamos.lista[i].prestatario) {
+            prestamos_seleccionados[j] = prestamos;
+            j++;
+        }
+    }
+    int posicion = listar(prestamos_seleccionados);
+    return pedir_prestamos(prestamos, posiciones[posicion]);
+}
+
+bool tiene_prestamo(Lista_de_prestamos const $prestamos, Prestatario const $prestatario) {
+    tiene = false;
+    for (unsigned int i = 0; i < prestamos.longitud; i++) {
+        tiene = &prestatario == prestamos.lista[i].prestatario;
+        if (tiene) {
+            break
+        }
+    }
+    return tiene;
 }
 
 /*
@@ -263,9 +289,7 @@ PARÁMETROS:
     prestamo: el prestamo a devolver
 */
 void devolver_prestamo(Prestamo &prestamo){
-  /*
-   * Cambia el campo estado de True a False
-   */
+    prestamo.estado = false;
 }
 
 /*
@@ -639,7 +663,7 @@ int main() {
       case 12: {
         if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar categoria
-        unsigned int posicion = listar(almacen, "categorias");
+        unsigned int posicion = listar(almacen.categorias);
         Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
         string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
         seleccionada.descripcion = nueva_descripcion;
@@ -649,7 +673,7 @@ int main() {
       case 13: {
         if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         // eliminar categoria
-        unsigned int posicion = listar(almacen, "categorias");
+        unsigned int posicion = listar(almacen.categorias);
         Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
         bool valido = validar_eliminacion_categoria(seleccionada, almacen.prestamos);
         if (valido) {
@@ -672,7 +696,7 @@ int main() {
       case 15:{
         if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar prestatario
-        unsigned int posicion = listar(almacen, "prestatarios");
+        unsigned int posicion = listar(almacen.prestatarios);
         Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
         string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ");
         string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
@@ -684,7 +708,7 @@ int main() {
       case 16: {
         if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //eliminar prestatario
-        unsigned int posicion = listar(almacen, "prestatarios");
+        unsigned int posicion = listar(almacen.prestatarios);
         Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
         bool valido = validar_eliminacion_prestatario(seleccionado, almacen.prestamos);
         if (valido) {
@@ -708,7 +732,7 @@ int main() {
       case 22: {
         if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //modificar prestamo
-        unsigned int posicion = listar(almacen, "prestamo");
+        unsigned int posicion = listar(almacen.prestamos);
         Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
         string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
         seleccionado.descripcion = nueva_descripcion;
@@ -718,7 +742,7 @@ int main() {
       case 23: {
         if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //eliminar prestamo
-        unsigned int posicion = listar(almacen, "prestamos");
+        unsigned int posicion = listar(almacen.prestamos);
         borrar_prestamo(almacen.prestamos, posicion);
         aviso("El prestamo fue eliminado con exito.");
         break;
@@ -726,11 +750,15 @@ int main() {
       case 24: {
         if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //devolver prestamo
-        unsigned int posicion = listar(almacen, "prestatario");
+        unsigned int posicion = listar(almacen.prestatarios);
         Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, posicion);
-        Prestamo& seleccionado = seleccionar_prestamo(almacen.prestamos, prestatario);
-        devolver_prestamo(seleccionado);
-        aviso("El prestamo fue devuelto con exito");
+        if (tiene_prestamo(alamacen.prestamos, prestario)) {
+            Prestamo& seleccionado = seleccionar_prestamo(almacen.prestamos, prestatario);
+            devolver_prestamo(seleccionado);
+            aviso("El prestamo fue devuelto con exito");
+        } else {
+            aviso("No hay prestamos asociados al prestatario seleccionado");
+        }
         break;
       }
       case 31: {
@@ -743,7 +771,7 @@ int main() {
       case 32: {
         if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
         //list prestamo por cat
-        unsigned int posicion = listar(almacen, "categorias");
+        unsigned int posicion = listar(almacen.categorias);
         Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
         Lista_de_prestamos reporte = prestamos_por_categoria(almacen.prestamos, seleccionada);
         mostrar_prestamos(reporte);
