@@ -384,9 +384,9 @@ int main() {
     Almacen almacen = {};
 
     // DESCOMENTAR PARA CREAR PRESTATARIOS DE EJEMPLO
-    crear_prestatarios_de_ejemplo(almacen);
+    // crear_prestatarios_de_ejemplo(almacen);
     // DESCOMENTAR PARA CREAR CATEGORIAS DE EJEMPLO
-    crear_categorias_de_ejemplo(almacen);
+    // crear_categorias_de_ejemplo(almacen);
 
     int opcion = -1;
     Menu menu_0 = {0, 3, {
