@@ -8,6 +8,10 @@ int const CANTIDAD_PRESTAMOS = 200;
 int const CANTIDAD_PRESTATARIOS = 200;
 string const SIN_ELEMENTOS = "No hay elementos para realizar esta operacion";
 
+void limpiar_pantalla() {
+    cout << string(50, '\n');
+}
+
 struct Categoria {
   unsigned int codigo;
   string descripcion;
@@ -246,38 +250,12 @@ unsigned int listar(Lista_de_prestamos &prestamos) {
     return seleccion - 1;
 }
 
-/*
-PROPÓSITO: muestra una lista de prestamos de un prestatario y pide al usuario que seleccione uno
-PARÁMETROS:
-    prestamos: lista de prestamos
-    prestatario: prestatario del cual seleccionar los prestamos
-RETORNO: un puntero a un prestamo
-*/
-Prestamo& seleccionar_prestamo(Lista_de_prestamos const &prestamos, Prestatario const &prestatario) {
-  /*
-   * se recorre y muestra con una estructura de bucle la lista de prestamos de un prestatario
-   * seleccionado y se le pide al usuario que eliga uno de las opciones listadas
-   * el usuario ingresa la seleccion y se valida que sea correcta y lo devuelve
-  */
-    int posiciones[CANTIDAD_PRESTAMOS];
-    Lista_de_prestamos prestamos_seleccionados;
-    int j = 0;
-    for (unsigned int i = 0; i < prestamos.longitud; i++) {
-        if (&prestatario == prestamos.lista[i].prestatario) {
-            prestamos_seleccionados[j] = prestamos;
-            j++;
-        }
-    }
-    int posicion = listar(prestamos_seleccionados);
-    return pedir_prestamos(prestamos, posiciones[posicion]);
-}
-
-bool tiene_prestamo(Lista_de_prestamos const $prestamos, Prestatario const $prestatario) {
-    tiene = false;
+bool tiene_prestamo(Lista_de_prestamos const &prestamos, Prestatario const &prestatario) {
+    bool tiene = false;
     for (unsigned int i = 0; i < prestamos.longitud; i++) {
         tiene = &prestatario == prestamos.lista[i].prestatario;
         if (tiene) {
-            break
+            break;
         }
     }
     return tiene;
@@ -359,6 +337,27 @@ Prestamo& pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
 }
 
 /*
+PROPÓSITO: muestra una lista de prestamos de un prestatario y pide al usuario que seleccione uno
+PARÁMETROS:
+    prestamos: lista de prestamos
+    prestatario: prestatario del cual seleccionar los prestamos
+RETORNO: un puntero a un prestamo
+*/
+Prestamo& seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario const &prestatario) {
+    int posiciones[CANTIDAD_PRESTAMOS];
+    Lista_de_prestamos prestamos_seleccionados;
+    int j = 0;
+    for (unsigned int i = 0; i < prestamos.longitud; i++) {
+        if (&prestatario == prestamos.lista[i].prestatario) {
+            posiciones[j] = i;
+            j++;
+        }
+    }
+    int posicion = listar(prestamos_seleccionados);
+    return pedir_prestamo(prestamos, posiciones[posicion]);
+}
+
+/*
 PROPÓSITO: generar un codigo automatico para la estructura a crear
 PARÁMETROS:
     alamcen: estructura donde se encuentra la informacion almacenada
@@ -391,6 +390,7 @@ struct Menu {
 };
 
 void dibujar_menu(Menu &menu) {
+    limpiar_pantalla();
   cout << "================================================================================" << endl;
   cout << "0 - Salir del programa" << endl;
   cout << "================================================================================" << endl;
@@ -752,7 +752,7 @@ int main() {
         //devolver prestamo
         unsigned int posicion = listar(almacen.prestatarios);
         Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, posicion);
-        if (tiene_prestamo(alamacen.prestamos, prestario)) {
+        if (tiene_prestamo(almacen.prestamos, prestatario)) {
             Prestamo& seleccionado = seleccionar_prestamo(almacen.prestamos, prestatario);
             devolver_prestamo(seleccionado);
             aviso("El prestamo fue devuelto con exito");
@@ -791,10 +791,10 @@ int main() {
         break;
       }
       default:
-      if (opcion == 1 || opcion == 2 || opcion == 3)
-        menu_actual = opcion;
-      else
-        menu_actual = 0;
+        if (opcion == 1 || opcion == 2 || opcion == 3)
+            menu_actual = opcion;
+        else
+            menu_actual = 0;
     }
     dibujar_menu(*menues[menu_actual]);
     opcion = pedir_opcion("[Ingrese una opción]: ");
