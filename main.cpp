@@ -13,42 +13,42 @@ void limpiar_pantalla() {
 }
 
 struct Categoria {
-  unsigned int codigo;
-  string descripcion;
+    unsigned int codigo;
+    string descripcion;
 };
 
 struct Lista_de_categorias {
-  Categoria lista[CANTIDAD_CATEGORIAS];
-  unsigned int longitud {0};
+    Categoria lista[CANTIDAD_CATEGORIAS];
+    unsigned int longitud {0};
 };
 
 struct Prestatario {
-  unsigned int codigo;
-  string apellido;
-  string nombre;
+    unsigned int codigo;
+    string apellido;
+    string nombre;
 };
 
 struct Lista_de_prestatarios {
-  Prestatario lista[CANTIDAD_PRESTATARIOS];
-  unsigned int longitud {0};
+    Prestatario lista[CANTIDAD_PRESTATARIOS];
+    unsigned int longitud {0};
 };
 
 struct Prestamo {
-  Categoria *categoria;
-  Prestatario *prestatario;
-  string descripcion;
-  bool estado;
+    Categoria *categoria;
+    Prestatario *prestatario;
+    string descripcion;
+    bool estado;
 };
 
 struct Lista_de_prestamos {
-  Prestamo lista[CANTIDAD_PRESTAMOS];
-  unsigned int longitud {0};
+    Prestamo lista[CANTIDAD_PRESTAMOS];
+    unsigned int longitud {0};
 };
 
 struct Almacen {
-  Lista_de_categorias categorias;
-  Lista_de_prestatarios prestatarios;
-  Lista_de_prestamos prestamos;
+    Lista_de_categorias categorias;
+    Lista_de_prestatarios prestatarios;
+    Lista_de_prestamos prestamos;
 };
 
 int pedir_opcion(string texto_a_mostrar);
@@ -384,24 +384,24 @@ unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico) {
 }
 
 struct Menu {
-  int id;
-  int cant_opciones;
-  string opciones[7];
+    int id;
+    int cant_opciones;
+    string opciones[7];
 };
 
 void dibujar_menu(Menu &menu) {
     limpiar_pantalla();
-  cout << "================================================================================" << endl;
-  cout << "0 - Salir del programa" << endl;
-  cout << "================================================================================" << endl;
-  for(int i=0; i < menu.cant_opciones; i++) {
+    cout << "================================================================================" << endl;
+    cout << "0 - Salir del programa" << endl;
+    cout << "================================================================================" << endl;
+    for(int i=0; i < menu.cant_opciones; i++) {
     cout << i+1 << " - " << menu.opciones[i] << endl;
-  }
-  if (menu.id != 0) {
+    }
+    if (menu.id != 0) {
     cout << "================================================================================" << endl;
     cout << "9 - Volver al menu principal" << endl;
-  }
-  cout << "================================================================================" << endl;
+    }
+    cout << "================================================================================" << endl;
 }
 
 /*
@@ -483,13 +483,13 @@ Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto
 }
 
 struct Reporte {
-  Categoria* categoria;
-  int cantidad;
+    Categoria* categoria;
+    int cantidad;
 };
 
 struct Lista_de_reporte {
-  Reporte categorias[CANTIDAD_CATEGORIAS];
-  int longitud {0};
+    Reporte categorias[CANTIDAD_CATEGORIAS];
+    int longitud {0};
 };
 
 /*
@@ -498,15 +498,15 @@ PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
 */
 Lista_de_reporte cantidad_prestamos_por_categoria(Almacen &almacen) {
-  /*
-   * ciclar la lista de categorias y llamar a una funcion auxiliar
-   * que retorna la lista de prestamos dada una categoria
-   * y mostrar la longitud de esta y se dibuja en pantalla
-   * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
-   * categoria el codigo de la categoria recibida por parametro y arma el reporte.
-  */
-  Lista_de_reporte reportes;
-  return reportes;
+    /*
+    * ciclar la lista de categorias y llamar a una funcion auxiliar
+    * que retorna la lista de prestamos dada una categoria
+    * y mostrar la longitud de esta y se dibuja en pantalla
+    * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
+    * categoria el codigo de la categoria recibida por parametro y arma el reporte.
+    */
+    Lista_de_reporte reportes;
+    return reportes;
 }
 
 /*
@@ -516,13 +516,13 @@ PARÁMETROS:
     categoria: la categoria para filtrar prestamos
 */
 Lista_de_prestamos prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria) {
-  /*
-   * llama una funcion auxiliar que retorna una lista de prestamos dada una categoria.
-   * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
-   * categoria el codigo de la categoria recibida por parametro y las pone en un array que devuelve.
-   */
-  Lista_de_prestamos prestamos_filtrados;
-  return prestamos_filtrados;
+    /*
+    * llama una funcion auxiliar que retorna una lista de prestamos dada una categoria.
+    * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
+    * categoria el codigo de la categoria recibida por parametro y las pone en un array que devuelve.
+    */
+    Lista_de_prestamos prestamos_filtrados;
+    return prestamos_filtrados;
 }
 
 /*
@@ -532,13 +532,13 @@ PARÁMETROS:
     campo: texto C/c para categoria o P/p para prestatario
 */
 Lista_de_prestamos prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo) {
-  /*
-   * revisa campo si es categoria o prestatario, para luego recorrer los prestamos pendientes
-   * y quedarse con el codigo de categoria o prestatario segun corresponda.
-   * Se filtra el array para eliminar repeticiones y ordenarlo para luego retornarlo.
-  */
-  Lista_de_prestamos prestamos;
-  return prestamos;
+    /*
+    * revisa campo si es categoria o prestatario, para luego recorrer los prestamos pendientes
+    * y quedarse con el codigo de categoria o prestatario segun corresponda.
+    * Se filtra el array para eliminar repeticiones y ordenarlo para luego retornarlo.
+    */
+    Lista_de_prestamos prestamos;
+    return prestamos;
 }
 
 /*
@@ -547,10 +547,10 @@ PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
 */
 void listar_prestatarios_con_prestamos_pendientes(Almacen &almacen) {
-  /*
-   * Se recorren los prestamos y si el campo estado es true se alamacena
-   * el prestatario en un array auxiliar para luego mostrarlo por pantalla
-   */
+    /*
+    * Se recorren los prestamos y si el campo estado es true se alamacena
+    * el prestatario en un array auxiliar para luego mostrarlo por pantalla
+    */
 }
 
 /*
@@ -559,9 +559,9 @@ PARÁMETROS:
     prestamos: lista de prestamos
 */
 void mostrar_prestamos(Lista_de_prestamos &prestamos) {
-  /*
-   * cicla prestamos y muestra cada uno por pantalla
-  */
+    /*
+    * cicla prestamos y muestra cada uno por pantalla
+    */
 }
 
 /*
@@ -570,9 +570,9 @@ PARÁMETROS:
     reportes: lista de reportes
 */
 void mostrar_reportes(Lista_de_reporte reportes) {
-  /*
-   * cicla reportes y muestra cada uno por pantalla
-  */
+    /*
+    * cicla reportes y muestra cada uno por pantalla
+    */
 }
 
 /*
@@ -581,7 +581,7 @@ PARÁMETROS:
     mensaje: el mensaje a mostrar
 */
 void aviso(string mensaje) {
-  cout << mensaje << endl;
+    cout << mensaje << endl;
 }
 
 int pedir_opcion(string texto_a_mostrar){
@@ -615,194 +615,195 @@ bool pedir_confirmacion(string texto_a_mostrar){
 }
 
 int main() {
-  Almacen almacen = {};
+    Almacen almacen = {};
 
-  crear_prestatarios_de_ejemplo(almacen);
-  crear_categorias_de_ejemplo(almacen);
+    crear_prestatarios_de_ejemplo(almacen);
+    crear_categorias_de_ejemplo(almacen);
 
-  int opcion = -1;
-  Menu menu_0 = {0, 3, {
-    "Administrar y consultar Categorías y Prestatarios",
-    "Administrar Préstamos",
-    "Consultar Préstamos"}
-  };
-  Menu menu_1 = {1, 6, {
-    "Agregar categoría",
-    "Modificar categoría",
-    "Eliminar categoría",
-    "Agregar prestatario",
-    "Modificar prestatario",
-    "Eliminar prestatario"}
-  };
-  Menu menu_2 = {2, 4, {
-    "Agregar préstamo",
-    "Modificar préstamo",
-    "Eliminar préstamo",
-    "Devolver préstamo"}
-  };
-  Menu menu_3 = {3, 4, {
-    "Cantidad de objetos prestados por categoría",
-    "Listado de préstamos por categoría",
-    "Listado de préstamos ordenados por categoría o prestatario",
-    "Listar todos los prestatarios que tienen al menos un objeto prestado"}
-  };
-  Menu *menues[4]={&menu_0,&menu_1,&menu_2,&menu_3};
-  int menu_actual = 0;
-  cout << endl << endl <<"+========================= Administración de Préstamos ========================+" << endl;
-  do {
-    switch (menu_actual*10 + opcion) {
-      case 11: {
-        //agregar categoria
-        string descripcion = pedir_dato("Ingrese la descripción de la categoría: ");
-        unsigned int codigo = obtener_codigo(almacen, "categorias");
-        Categoria categoria = crear_categoria(codigo, descripcion);
-        almacenar_categoria(almacen.categorias, categoria);
-        mostrar_categoria(categoria);
-        break;
-      }
-      case 12: {
-        if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //modificar categoria
-        unsigned int posicion = listar(almacen.categorias);
-        Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
-        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
-        seleccionada.descripcion = nueva_descripcion;
-        mostrar_categoria(seleccionada);
-        break;
-      }
-      case 13: {
-        if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        // eliminar categoria
-        unsigned int posicion = listar(almacen.categorias);
-        Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
-        bool valido = validar_eliminacion_categoria(seleccionada, almacen.prestamos);
-        if (valido) {
-          borrar_categoria(almacen.categorias, posicion);
-        } else {
-          aviso("La categoría no puede eliminarse debido a que hay préstamos pendientes.");
+    int opcion = -1;
+    Menu menu_0 = {0, 3, {
+        "Administrar y consultar Categorías y Prestatarios",
+        "Administrar Préstamos",
+        "Consultar Préstamos"}
+    };
+    Menu menu_1 = {1, 6, {
+        "Agregar categoría",
+        "Modificar categoría",
+        "Eliminar categoría",
+        "Agregar prestatario",
+        "Modificar prestatario",
+        "Eliminar prestatario"}
+    };
+    Menu menu_2 = {2, 4, {
+        "Agregar préstamo",
+        "Modificar préstamo",
+        "Eliminar préstamo",
+        "Devolver préstamo"}
+    };
+    Menu menu_3 = {3, 4, {
+        "Cantidad de objetos prestados por categoría",
+        "Listado de préstamos por categoría",
+        "Listado de préstamos ordenados por categoría o prestatario",
+        "Listar todos los prestatarios que tienen al menos un objeto prestado"}
+    };
+    Menu *menues[4]={&menu_0,&menu_1,&menu_2,&menu_3};
+    int menu_actual = 0;
+    cout << endl << endl <<"+========================= Administración de Préstamos ========================+" << endl;
+    do {
+        switch (menu_actual*10 + opcion) {
+            case 11: {
+                //agregar categoria
+                string descripcion = pedir_dato("Ingrese la descripción de la categoría: ");
+                unsigned int codigo = obtener_codigo(almacen, "categorias");
+                Categoria categoria = crear_categoria(codigo, descripcion);
+                almacenar_categoria(almacen.categorias, categoria);
+                mostrar_categoria(categoria);
+                break;
+            }
+            case 12: {
+                if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //modificar categoria
+                unsigned int posicion = listar(almacen.categorias);
+                Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
+                string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
+                seleccionada.descripcion = nueva_descripcion;
+                mostrar_categoria(seleccionada);
+                break;
+            }
+            case 13: {
+                if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                // eliminar categoria
+                unsigned int posicion = listar(almacen.categorias);
+                Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
+                bool valido = validar_eliminacion_categoria(seleccionada, almacen.prestamos);
+                if (valido) {
+                  borrar_categoria(almacen.categorias, posicion);
+                } else {
+                  aviso("La categoría no puede eliminarse debido a que hay préstamos pendientes.");
+                }
+                break;
+            }
+            case 14:{
+                //agregar prestatario
+                string nombre = pedir_dato("Ingrese el nombre del prestatario: ");
+                string apellido = pedir_dato("Ingrese el apellido del prestatario: ");
+                unsigned int codigo = obtener_codigo(almacen, "prestatarios");
+                Prestatario prestatario = crear_prestatario(codigo, nombre, apellido);
+                almacenar_prestatario(almacen.prestatarios, prestatario);
+                mostrar_prestatario(prestatario);
+                break;
+            }
+            case 15:{
+                if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //modificar prestatario
+                unsigned int posicion = listar(almacen.prestatarios);
+                Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
+                string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ");
+                string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
+                seleccionado.nombre = nuevo_nombre;
+                seleccionado.apellido = nuevo_apellido;
+                mostrar_prestatario(seleccionado);
+                break;
+            }
+            case 16: {
+                if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //eliminar prestatario
+                unsigned int posicion = listar(almacen.prestatarios);
+                Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
+                bool valido = validar_eliminacion_prestatario(seleccionado, almacen.prestamos);
+                if (valido) {
+                  borrar_prestatario(almacen.prestatarios, posicion);
+                } else {
+                  aviso("El prestatario no puede eliminarse debido a que hay préstamos pendientes.");
+                }
+                break;
+            }
+            case 21: {
+                if (almacen.categorias.longitud == 0 || almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //agreagar prestamo
+                Categoria& categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
+                Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
+                string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ");
+                Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
+                almacenar_prestamo(almacen.prestamos, prestamo);
+                mostrar_prestamo(prestamo);
+                break;
+            }
+            case 22: {
+                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //modificar prestamo
+                unsigned int posicion = listar(almacen.prestamos);
+                Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
+                string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
+                seleccionado.descripcion = nueva_descripcion;
+                mostrar_prestamo(seleccionado);
+                break;
+            }
+            case 23: {
+                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //eliminar prestamo
+                unsigned int posicion = listar(almacen.prestamos);
+                borrar_prestamo(almacen.prestamos, posicion);
+                aviso("El prestamo fue eliminado con exito.");
+                break;
+            }
+            case 24: {
+                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //devolver prestamo
+                unsigned int posicion = listar(almacen.prestatarios);
+                Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, posicion);
+                if (tiene_prestamo(almacen.prestamos, prestatario)) {
+                    Prestamo& seleccionado = seleccionar_prestamo(almacen.prestamos, prestatario);
+                    devolver_prestamo(seleccionado);
+                    aviso("El prestamo fue devuelto con exito");
+                } else {
+                    aviso("No hay prestamos asociados al prestatario seleccionado");
+                }
+                break;
+            }
+            case 31: {
+                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //cant obj prestados por cat
+                Lista_de_reporte reportes = cantidad_prestamos_por_categoria(almacen);
+                mostrar_reportes(reportes);
+                break;
+            }
+            case 32: {
+                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //list prestamo por cat
+                unsigned int posicion = listar(almacen.categorias);
+                Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
+                Lista_de_prestamos reporte = prestamos_por_categoria(almacen.prestamos, seleccionada);
+                mostrar_prestamos(reporte);
+                break;
+            }
+            case 33: {
+                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                //list ordenado prestamo por cat o prestatario
+                string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?");
+                Lista_de_prestamos pendientes = prestamos_pendientes_segun_criterio(almacen, campo);
+                mostrar_prestamos(pendientes);
+                break;
+            }
+            case 34: {
+                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                listar_prestatarios_con_prestamos_pendientes(almacen);
+                break;
+            }
+            default: {
+                if (opcion == 1 || opcion == 2 || opcion == 3)
+                    menu_actual = opcion;
+                else
+                    menu_actual = 0;
+            }
         }
-        break;
-      }
-      case 14:{
-        //agregar prestatario
-        string nombre = pedir_dato("Ingrese el nombre del prestatario: ");
-        string apellido = pedir_dato("Ingrese el apellido del prestatario: ");
-        unsigned int codigo = obtener_codigo(almacen, "prestatarios");
-        Prestatario prestatario = crear_prestatario(codigo, nombre, apellido);
-        almacenar_prestatario(almacen.prestatarios, prestatario);
-        mostrar_prestatario(prestatario);
-        break;
-      }
-      case 15:{
-        if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //modificar prestatario
-        unsigned int posicion = listar(almacen.prestatarios);
-        Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
-        string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ");
-        string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
-        seleccionado.nombre = nuevo_nombre;
-        seleccionado.apellido = nuevo_apellido;
-        mostrar_prestatario(seleccionado);
-        break;
-      }
-      case 16: {
-        if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //eliminar prestatario
-        unsigned int posicion = listar(almacen.prestatarios);
-        Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
-        bool valido = validar_eliminacion_prestatario(seleccionado, almacen.prestamos);
-        if (valido) {
-          borrar_prestatario(almacen.prestatarios, posicion);
-        } else {
-          aviso("El prestatario no puede eliminarse debido a que hay préstamos pendientes.");
-        }
-        break;
-      }
-      case 21: {
-        if (almacen.categorias.longitud == 0 || almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //agreagar prestamo
-        Categoria& categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
-        Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
-        string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ");
-        Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
-        almacenar_prestamo(almacen.prestamos, prestamo);
-        mostrar_prestamo(prestamo);
-        break;
-      }
-      case 22: {
-        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //modificar prestamo
-        unsigned int posicion = listar(almacen.prestamos);
-        Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
-        string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
-        seleccionado.descripcion = nueva_descripcion;
-        mostrar_prestamo(seleccionado);
-        break;
-      }
-      case 23: {
-        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //eliminar prestamo
-        unsigned int posicion = listar(almacen.prestamos);
-        borrar_prestamo(almacen.prestamos, posicion);
-        aviso("El prestamo fue eliminado con exito.");
-        break;
-      }
-      case 24: {
-        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //devolver prestamo
-        unsigned int posicion = listar(almacen.prestatarios);
-        Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, posicion);
-        if (tiene_prestamo(almacen.prestamos, prestatario)) {
-            Prestamo& seleccionado = seleccionar_prestamo(almacen.prestamos, prestatario);
-            devolver_prestamo(seleccionado);
-            aviso("El prestamo fue devuelto con exito");
-        } else {
-            aviso("No hay prestamos asociados al prestatario seleccionado");
-        }
-        break;
-      }
-      case 31: {
-        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //cant obj prestados por cat
-        Lista_de_reporte reportes = cantidad_prestamos_por_categoria(almacen);
-        mostrar_reportes(reportes);
-        break;
-      }
-      case 32: {
-        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //list prestamo por cat
-        unsigned int posicion = listar(almacen.categorias);
-        Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
-        Lista_de_prestamos reporte = prestamos_por_categoria(almacen.prestamos, seleccionada);
-        mostrar_prestamos(reporte);
-        break;
-      }
-      case 33: {
-        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        //list ordenado prestamo por cat o prestatario
-        string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?");
-        Lista_de_prestamos pendientes = prestamos_pendientes_segun_criterio(almacen, campo);
-        mostrar_prestamos(pendientes);
-        break;
-      }
-      case 34: {
-        if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-        listar_prestatarios_con_prestamos_pendientes(almacen);
-        break;
-      }
-      default:
-        if (opcion == 1 || opcion == 2 || opcion == 3)
-            menu_actual = opcion;
-        else
-            menu_actual = 0;
-    }
-    dibujar_menu(*menues[menu_actual]);
-    opcion = pedir_opcion("[Ingrese una opción]: ");
-    cout << "--------------------------------------------------------------------------------" << endl;
-    cout << endl << endl;
-  } while (opcion != 0);
+        dibujar_menu(*menues[menu_actual]);
+        opcion = pedir_opcion("[Ingrese una opción]: ");
+        cout << "--------------------------------------------------------------------------------" << endl;
+        cout << endl << endl;
+    } while (opcion != 0);
 
-  return 0;
+    return 0;
 }
 
 
