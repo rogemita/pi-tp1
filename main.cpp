@@ -208,7 +208,7 @@ unsigned int listar(Lista_de_categorias &categorias) {
     }
     do {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
-    } while (seleccion > longitud);
+    } while (seleccion > longitud || seleccion == 0);
     return seleccion - 1;
 }
 
@@ -227,7 +227,7 @@ unsigned int listar(Lista_de_prestatarios &prestatarios) {
     }
     do {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
-    } while (seleccion > longitud);
+    } while (seleccion > longitud || seleccion == 0);
     return seleccion - 1;
 }
 
@@ -246,7 +246,7 @@ unsigned int listar(Lista_de_prestamos &prestamos) {
     }
     do {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
-    } while (seleccion > longitud);
+    } while (seleccion > longitud || seleccion == 0);
     return seleccion - 1;
 }
 
