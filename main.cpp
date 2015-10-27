@@ -242,12 +242,6 @@ RETORNO: un numero positivo
 */
 unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico);
 /*
-PROPÓSITO: Dibuja un menu dado
-PARÁMETROS:
-    menu: un menu a dibujar
-*/
-void dibujar_menu(Menu &menu);
-/*
 PROPÓSITO: obtener una cadena de un campo de dato de la estructura correspondiente
 PARÁMETROS:
     texto_a_mostrar: texto de referencia a lo que se debe ingresar
@@ -365,6 +359,11 @@ void crear_prestatarios_de_ejemplo(Almacen &almacen) {
     almacenar_prestatario(almacen.prestatarios, prestatario3);
 }
 
+/*
+PROPÓSITO: Dibuja un menu dado
+PARÁMETROS:
+    menu: un menu a dibujar
+*/
 void dibujar_menu(Menu &menu) {
     limpiar_pantalla();
     cout << "================================================================================" << endl;
