@@ -13,7 +13,7 @@ void limpiar_pantalla() {
 }
 
 void capitalize(string &str) {
-    for(int i = 0; i < str.size(); ++i) {
+    for(unsigned int i = 0; i < str.size(); ++i) {
         str[i] = tolower(str[i]);
     }
     str[0] = toupper(str[0]);
@@ -433,9 +433,7 @@ int main() {
                 unsigned int codigo = obtener_codigo(almacen, "categorias");
                 Categoria categoria = crear_categoria(codigo, descripcion);
                 almacenar_categoria(almacen.categorias, categoria);
-
-                limpiar_pantalla();
-                mostrar_categoria(categoria);
+                mensaje = "Categoria almacenada.";
                 break;
             }
             case 12: {
@@ -445,9 +443,7 @@ int main() {
                 Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
                 string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
                 seleccionada.descripcion = nueva_descripcion;
-
-                limpiar_pantalla();
-                mostrar_categoria(seleccionada);
+                mensaje = "La categoria fué modificada.";
                 break;
             }
             case 13: {
@@ -458,12 +454,10 @@ int main() {
                 bool valido = validar_eliminacion_categoria(seleccionada, almacen.prestamos);
                 if (valido) {
                   borrar_categoria(almacen.categorias, posicion);
-                  mensaje = "-----> BORRADA.";
+                  mensaje = "Categoria eliminada";
                 } else {
                   mensaje = "La categoría no puede eliminarse debido a que hay préstamos pendientes.";
                 }
-
-                aviso(mensaje);
                 break;
             }
             case 14:{
@@ -473,9 +467,7 @@ int main() {
                 unsigned int codigo = obtener_codigo(almacen, "prestatarios");
                 Prestatario prestatario = crear_prestatario(codigo, nombre, apellido);
                 almacenar_prestatario(almacen.prestatarios, prestatario);
-
-                limpiar_pantalla();
-                mostrar_prestatario(prestatario);
+                mensaje = "Prestatario almacenado.";
                 break;
             }
             case 15:{
@@ -487,9 +479,7 @@ int main() {
                 string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
                 seleccionado.nombre = nuevo_nombre;
                 seleccionado.apellido = nuevo_apellido;
-
-                limpiar_pantalla();
-                mostrar_prestatario(seleccionado);
+                mensaje = "Prestatario modificado.";
                 break;
             }
             case 16: {
@@ -500,12 +490,10 @@ int main() {
                 bool valido = validar_eliminacion_prestatario(seleccionado, almacen.prestamos);
                 if (valido) {
                   borrar_prestatario(almacen.prestatarios, posicion);
-                  mensaje = "-----> BORRADO.";
+                  mensaje = "Prestatario borrado.";
                 } else {
                   mensaje = "El prestatario no puede eliminarse debido a que hay préstamos pendientes.";
                 }
-
-                aviso(mensaje);
                 break;
             }
             case 21: {
@@ -516,9 +504,7 @@ int main() {
                 string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ");
                 Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
                 almacenar_prestamo(almacen.prestamos, prestamo);
-
-                limpiar_pantalla();
-                mostrar_prestamo(prestamo);
+                mensaje = "Prestamo almacenado.";
                 break;
             }
             case 22: {
@@ -528,9 +514,7 @@ int main() {
                 Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
                 string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
                 seleccionado.descripcion = nueva_descripcion;
-
-                limpiar_pantalla();
-                mostrar_prestamo(seleccionado);
+                mensaje = "Prestamo modificado.";
                 break;
             }
             case 23: {
@@ -538,8 +522,7 @@ int main() {
                 //eliminar prestamo
                 unsigned int posicion = listar(almacen.prestamos);
                 borrar_prestamo(almacen.prestamos, posicion);
-
-                aviso("El prestamo fue eliminado con exito.");
+                mensaje = "El prestamo fue eliminado con exito.";
                 break;
             }
             case 24: {
@@ -554,8 +537,6 @@ int main() {
                 } else {
                     mensaje = "No hay prestamos asociados al prestatario seleccionado";
                 }
-
-                aviso(mensaje);
                 break;
             }
             case 31: {
@@ -595,12 +576,16 @@ int main() {
                     menu_actual = 0;
             }
         }
+        if (mensaje.size() > 0) {
+            aviso(mensaje);
+        }
 
         cout << endl;
         dibujar_menu(*menues[menu_actual]);
         opcion = pedir_opcion("[Ingrese una opción]: ");
         cout << "--------------------------------------------------------------------------------" << endl;
         cout << endl << endl;
+        mensaje = "";
     } while (opcion != 0);
 
     return 0;
