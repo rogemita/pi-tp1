@@ -67,23 +67,6 @@ struct Menu {
     string opciones[7];
 };
 
-// FIXTURES
-void crear_categorias_de_ejemplo(Almacen &almacen) {
-    almacen.categorias = {};
-    almacen.categorias.lista[0] = {0, "a"};
-    almacen.categorias.lista[1] = {1, "b"};
-    almacen.categorias.lista[2] = {2, "c"};
-    almacen.categorias.longitud = 3;
-}
-
-void crear_prestatarios_de_ejemplo(Almacen &almacen) {
-    almacen.prestatarios = {};
-    almacen.prestatarios.lista[0] = {0, "a", "A"};
-    almacen.prestatarios.lista[1] = {1, "b", "B"};
-    almacen.prestatarios.lista[2] = {2, "c", "C"};
-    almacen.prestatarios.longitud = 3;
-}
-
 /*
 PROPÓSITO: crear una categoria
 PARÁMETROS:
@@ -363,6 +346,25 @@ RETORNO: devuelve un bool que indica si se confirma o no
 */
 bool pedir_confirmacion(string texto_a_mostrar);
 
+// FIXTURES
+void crear_categorias_de_ejemplo(Almacen &almacen) {
+    Categoria juegos = crear_categoria(0, "Juegos");
+    almacenar_categoria(almacen.categorias, juegos);
+    Categoria musica = crear_categoria(1, "Musica");
+    almacenar_categoria(almacen.categorias, musica);
+    Categoria libros = crear_categoria(2, "Libros");
+    almacenar_categoria(almacen.categorias, libros);
+}
+
+void crear_prestatarios_de_ejemplo(Almacen &almacen) {
+    Prestatario prestatario1 = crear_prestatario(0, "Petreco", "Garcia");
+    almacenar_prestatario(almacen.prestatarios, prestatario1);
+    Prestatario prestatario2 = crear_prestatario(1, "Carlos", "Lamuela");
+    almacenar_prestatario(almacen.prestatarios, prestatario2);
+    Prestatario prestatario3 = crear_prestatario(2, "Osmar", "Carrizo");
+    almacenar_prestatario(almacen.prestatarios, prestatario3);
+}
+
 void dibujar_menu(Menu &menu) {
     limpiar_pantalla();
     cout << "================================================================================" << endl;
@@ -382,7 +384,9 @@ void dibujar_menu(Menu &menu) {
 int main() {
     Almacen almacen = {};
 
+    // DESCOMENTAR PARA CREAR PRESTATARIOS DE EJEMPLO
     crear_prestatarios_de_ejemplo(almacen);
+    // DESCOMENTAR PARA CREAR CATEGORIAS DE EJEMPLO
     crear_categorias_de_ejemplo(almacen);
 
     int opcion = -1;
@@ -413,6 +417,7 @@ int main() {
     };
     Menu *menues[4]={&menu_0,&menu_1,&menu_2,&menu_3};
     int menu_actual = 0;
+
     cout << endl << endl <<"+========================= Administración de Préstamos ========================+" << endl;
     do {
         switch (menu_actual*10 + opcion) {
