@@ -12,6 +12,13 @@ void limpiar_pantalla() {
     cout << string(50, '\n');
 }
 
+void capitalize(string &str) {
+    for(int i = 0; i < str.size(); ++i) {
+        str[i] = tolower(str[i]);
+    }
+    str[0] = toupper(str[0]);
+}
+
 struct Categoria {
     unsigned int codigo;
     string descripcion;
@@ -365,7 +372,6 @@ PARÁMETROS:
     menu: un menu a dibujar
 */
 void dibujar_menu(Menu &menu) {
-    limpiar_pantalla();
     cout << "================================================================================" << endl;
     cout << "0 - Salir del programa" << endl;
     cout << "================================================================================" << endl;
@@ -381,12 +387,13 @@ void dibujar_menu(Menu &menu) {
 
 
 int main() {
+    string mensaje;
     Almacen almacen = {};
 
     // DESCOMENTAR PARA CREAR PRESTATARIOS DE EJEMPLO
-    // crear_prestatarios_de_ejemplo(almacen);
+    crear_prestatarios_de_ejemplo(almacen);
     // DESCOMENTAR PARA CREAR CATEGORIAS DE EJEMPLO
-    // crear_categorias_de_ejemplo(almacen);
+    crear_categorias_de_ejemplo(almacen);
 
     int opcion = -1;
     Menu menu_0 = {0, 3, {
@@ -426,6 +433,8 @@ int main() {
                 unsigned int codigo = obtener_codigo(almacen, "categorias");
                 Categoria categoria = crear_categoria(codigo, descripcion);
                 almacenar_categoria(almacen.categorias, categoria);
+
+                limpiar_pantalla();
                 mostrar_categoria(categoria);
                 break;
             }
@@ -436,6 +445,8 @@ int main() {
                 Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
                 string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
                 seleccionada.descripcion = nueva_descripcion;
+
+                limpiar_pantalla();
                 mostrar_categoria(seleccionada);
                 break;
             }
@@ -447,9 +458,12 @@ int main() {
                 bool valido = validar_eliminacion_categoria(seleccionada, almacen.prestamos);
                 if (valido) {
                   borrar_categoria(almacen.categorias, posicion);
+                  mensaje = "-----> BORRADA.";
                 } else {
-                  aviso("La categoría no puede eliminarse debido a que hay préstamos pendientes.");
+                  mensaje = "La categoría no puede eliminarse debido a que hay préstamos pendientes.";
                 }
+
+                aviso(mensaje);
                 break;
             }
             case 14:{
@@ -459,6 +473,8 @@ int main() {
                 unsigned int codigo = obtener_codigo(almacen, "prestatarios");
                 Prestatario prestatario = crear_prestatario(codigo, nombre, apellido);
                 almacenar_prestatario(almacen.prestatarios, prestatario);
+
+                limpiar_pantalla();
                 mostrar_prestatario(prestatario);
                 break;
             }
@@ -471,6 +487,8 @@ int main() {
                 string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
                 seleccionado.nombre = nuevo_nombre;
                 seleccionado.apellido = nuevo_apellido;
+
+                limpiar_pantalla();
                 mostrar_prestatario(seleccionado);
                 break;
             }
@@ -482,9 +500,12 @@ int main() {
                 bool valido = validar_eliminacion_prestatario(seleccionado, almacen.prestamos);
                 if (valido) {
                   borrar_prestatario(almacen.prestatarios, posicion);
+                  mensaje = "-----> BORRADO.";
                 } else {
-                  aviso("El prestatario no puede eliminarse debido a que hay préstamos pendientes.");
+                  mensaje = "El prestatario no puede eliminarse debido a que hay préstamos pendientes.";
                 }
+
+                aviso(mensaje);
                 break;
             }
             case 21: {
@@ -495,6 +516,8 @@ int main() {
                 string descripcion = pedir_dato("Ingrese la descripcion del prestamo: ");
                 Prestamo prestamo = crear_prestamo(categoria, prestatario, descripcion);
                 almacenar_prestamo(almacen.prestamos, prestamo);
+
+                limpiar_pantalla();
                 mostrar_prestamo(prestamo);
                 break;
             }
@@ -505,6 +528,8 @@ int main() {
                 Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
                 string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
                 seleccionado.descripcion = nueva_descripcion;
+
+                limpiar_pantalla();
                 mostrar_prestamo(seleccionado);
                 break;
             }
@@ -513,6 +538,7 @@ int main() {
                 //eliminar prestamo
                 unsigned int posicion = listar(almacen.prestamos);
                 borrar_prestamo(almacen.prestamos, posicion);
+
                 aviso("El prestamo fue eliminado con exito.");
                 break;
             }
@@ -524,10 +550,12 @@ int main() {
                 if (tiene_prestamo(almacen.prestamos, prestatario)) {
                     Prestamo& seleccionado = seleccionar_prestamo(almacen.prestamos, prestatario);
                     devolver_prestamo(seleccionado);
-                    aviso("El prestamo fue devuelto con exito");
+                    mensaje = "El prestamo fue devuelto con exito";
                 } else {
-                    aviso("No hay prestamos asociados al prestatario seleccionado");
+                    mensaje = "No hay prestamos asociados al prestatario seleccionado";
                 }
+
+                aviso(mensaje);
                 break;
             }
             case 31: {
@@ -560,12 +588,15 @@ int main() {
                 break;
             }
             default: {
+                limpiar_pantalla();
                 if (opcion == 1 || opcion == 2 || opcion == 3)
                     menu_actual = opcion;
                 else
                     menu_actual = 0;
             }
         }
+
+        cout << endl;
         dibujar_menu(*menues[menu_actual]);
         opcion = pedir_opcion("[Ingrese una opción]: ");
         cout << "--------------------------------------------------------------------------------" << endl;
@@ -576,16 +607,20 @@ int main() {
 }
 
 Categoria crear_categoria(unsigned int codigo, string descripcion) {
+    capitalize(descripcion);
     Categoria categoria = {codigo, descripcion};
     return categoria;
 }
 
 Prestamo crear_prestamo(Categoria &categoria, Prestatario &prestatario, string descripcion) {
+    capitalize(descripcion);
     Prestamo prestamo = {&categoria, &prestatario, descripcion, true};
     return prestamo;
 }
 
 Prestatario crear_prestatario(unsigned int codigo, string nombre, string apellido) {
+    capitalize(nombre);
+    capitalize(apellido);
     Prestatario prestatario = {codigo, nombre, apellido};
     return prestatario;
 }
@@ -869,6 +904,7 @@ void mostrar_reportes(Lista_de_reporte reportes) {
 }
 
 void aviso(string mensaje) {
+    limpiar_pantalla();
     cout << mensaje << endl;
 }
 
