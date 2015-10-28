@@ -358,11 +358,11 @@ void crear_categorias_de_ejemplo(Almacen &almacen) {
 }
 
 void crear_prestatarios_de_ejemplo(Almacen &almacen) {
-    Prestatario prestatario1 = crear_prestatario(0, "Petreco", "Garcia");
+    Prestatario prestatario1 = crear_prestatario(0, "Garcia", "Petreco");
     almacenar_prestatario(almacen.prestatarios, prestatario1);
-    Prestatario prestatario2 = crear_prestatario(1, "Carlos", "Lamuela");
+    Prestatario prestatario2 = crear_prestatario(1, "Lamuela", "Carlos");
     almacenar_prestatario(almacen.prestatarios, prestatario2);
-    Prestatario prestatario3 = crear_prestatario(2, "Osmar", "Carrizo");
+    Prestatario prestatario3 = crear_prestatario(2, "Carrizo", "Osmar");
     almacenar_prestatario(almacen.prestatarios, prestatario3);
 }
 
@@ -918,7 +918,7 @@ bool pedir_confirmacion(string texto_a_mostrar){
         confirmacion = cin.get();
         condicion = cin.fail();
         if (!condicion) {
-            tolower(confirmacion[0]);
+            confirmacion = tolower(confirmacion[0]);
             condicion = confirmacion == "s" || confirmacion == "n";
         }
         cin.clear();
