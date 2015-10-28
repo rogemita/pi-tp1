@@ -787,7 +787,7 @@ unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico) {
 string pedir_dato(string texto_a_mostrar) {
     string cadena;
     cout << texto_a_mostrar;
-    cin >> cadena;
+    getline(cin, cadena);
     return cadena;
 }
 
