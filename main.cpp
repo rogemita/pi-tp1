@@ -442,6 +442,7 @@ int main() {
                 unsigned int posicion = listar(almacen.categorias);
                 Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
                 string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
+                capitalize(nueva_descripcion);
                 seleccionada.descripcion = nueva_descripcion;
                 mensaje = "La categoria fué modificada.";
                 break;
@@ -477,6 +478,8 @@ int main() {
                 Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
                 string nuevo_nombre = pedir_dato("Ingrese el nuevo nombre: ");
                 string nuevo_apellido = pedir_dato("Ingrese el nuevo apellido: ");
+                capitalize(nuevo_nombre);
+                capitalize(nuevo_apellido);
                 seleccionado.nombre = nuevo_nombre;
                 seleccionado.apellido = nuevo_apellido;
                 mensaje = "Prestatario modificado.";
@@ -513,6 +516,7 @@ int main() {
                 unsigned int posicion = listar(almacen.prestamos);
                 Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
                 string nueva_descripcion = pedir_dato("Ingrese la nueva descripción: ");
+                capitalize(nueva_descripcion);
                 seleccionado.descripcion = nueva_descripcion;
                 mensaje = "Prestamo modificado.";
                 break;
@@ -664,9 +668,9 @@ void borrar_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
 }
 
 unsigned int listar(Lista_de_categorias &categorias) {
-    int longitud = categorias.longitud;
-    int seleccion = 0;
-    for (int i = 0; i < longitud; i++) {
+    unsigned int longitud = categorias.longitud;
+    unsigned int seleccion = 0;
+    for (unsigned int i = 0; i < longitud; i++) {
         cout << i + 1 << " -> ";
         mostrar_categoria(categorias.lista[i]);
     }
@@ -789,7 +793,7 @@ string pedir_dato(string texto_a_mostrar) {
 
 int existe_categoria(Lista_de_categorias &categorias, int codigo) {
     int posicion = -1;
-    for (int i = 0; i < categorias.longitud; i++) {
+    for (unsigned int i = 0; i < categorias.longitud; i++) {
         if (categorias.lista[i].codigo == codigo) {
             posicion = i;
             break;
@@ -800,7 +804,7 @@ int existe_categoria(Lista_de_categorias &categorias, int codigo) {
 
 int existe_prestatario(Lista_de_prestatarios &prestatarios, int codigo) {
     int posicion = -1;
-    for (int i = 0; i < prestatarios.longitud; i++) {
+    for (unsigned int i = 0; i < prestatarios.longitud; i++) {
         if (prestatarios.lista[i].codigo == codigo) {
             posicion = i;
             break;
@@ -908,17 +912,17 @@ int pedir_opcion(string texto_a_mostrar){
 
 bool pedir_confirmacion(string texto_a_mostrar){
     bool condicion;
-    char confirmacion;
+    string confirmacion;
     do {
         cout << texto_a_mostrar;
         confirmacion = cin.get();
         condicion = cin.fail();
         if (!condicion) {
-            tolower(confirmacion);
-            condicion = confirmacion == 's' || confirmacion == 'n';
+            tolower(confirmacion[0]);
+            condicion = confirmacion == "s" || confirmacion == "n";
         }
         cin.clear();
         cin.ignore(256, '\n');
     } while(!condicion);
-    return confirmacion == 's';
+    return confirmacion == "s";
 }
