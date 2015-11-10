@@ -293,7 +293,7 @@ PROPÓSITO: dibujar en pantalla un reporte de cantidad de prestamos por cada cat
 PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
 */
-Lista_de_reporte cantidad_prestamos_por_categoria(Almacen &almacen);
+Lista_de_reporte& cantidad_prestamos_por_categoria(Almacen &almacen);
 /*
 PROPÓSITO: dibujar en pantalla un reporte de prestamos para una categoria dada
 PARÁMETROS:
@@ -325,7 +325,7 @@ PROPÓSITO: muestra reporte de cantidad de prestamos por categoria por pantalla
 PARÁMETROS:
     reportes: lista de reportes
 */
-void mostrar_reportes(Lista_de_reporte reportes);
+void mostrar_reportes(Lista_de_reporte &reportes);
 /*
 PROPÓSITO: muestra un mensaje al usuario
 PARÁMETROS:
@@ -366,6 +366,13 @@ void crear_prestatarios_de_ejemplo(Almacen &almacen) {
     almacenar_prestatario(almacen.prestatarios, prestatario3);
 }
 
+void crear_prestamos_de_ejemplo(Almacen &almacen) {
+    Categoria& juegos = pedir_categoria(almacen.categorias, 0);
+    Prestatario& garcia = pedir_prestatario(almacen.prestatarios, 0);
+    Prestamo prestamo1 = crear_prestamo(juegos, garcia, "Mortal Kombat 4");
+    almacenar_prestamo(almacen.prestamos, prestamo1);
+}
+
 /*
 PROPÓSITO: Dibuja un menu dado
 PARÁMETROS:
@@ -394,6 +401,8 @@ int main() {
     crear_prestatarios_de_ejemplo(almacen);
     // DESCOMENTAR PARA CREAR CATEGORIAS DE EJEMPLO
     crear_categorias_de_ejemplo(almacen);
+	// DESCOMENTAR PARA CREAR PRESTAMOS DE EJEMPLO
+    crear_prestamos_de_ejemplo(almacen);
 
     int opcion = -1;
     Menu menu_0 = {0, 3, {
@@ -546,7 +555,7 @@ int main() {
             case 31: {
                 if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
                 //cant obj prestados por cat
-                Lista_de_reporte reportes = cantidad_prestamos_por_categoria(almacen);
+                Lista_de_reporte& reportes = cantidad_prestamos_por_categoria(almacen);
                 mostrar_reportes(reportes);
                 break;
             }
@@ -866,7 +875,17 @@ Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto
     return pedir_prestatario(prestatarios, posicion);
 }
 
-Lista_de_reporte cantidad_prestamos_por_categoria(Almacen &almacen) {
+int cant_prestamos_pendientes_segun_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
+    int cant = 0;
+    for (int i = 0; i < prestamos.longitud; ++i) {
+        if (&categoria == prestamos.lista[i].categoria && prestamos.lista[i].estado) {
+            cant++;
+        }
+    }
+    return cant;
+}
+
+Lista_de_reporte& cantidad_prestamos_por_categoria(Almacen &almacen) {
     /*
     * ciclar la lista de categorias y llamar a una funcion auxiliar
     * que retorna la lista de prestamos dada una categoria
@@ -875,6 +894,12 @@ Lista_de_reporte cantidad_prestamos_por_categoria(Almacen &almacen) {
     * categoria el codigo de la categoria recibida por parametro y arma el reporte.
     */
     Lista_de_reporte reportes;
+    for (int i = 0; i < almacen.categorias.longitud; ++i) {
+        int cant = cant_prestamos_pendientes_segun_categoria(almacen.categorias.lista[i], almacen.prestamos);
+        Reporte reporte = {&almacen.categorias.lista[i], cant};
+        reportes.categorias[i] = reporte;
+        reportes.longitud++;
+    }
     return reportes;
 }
 
@@ -911,10 +936,12 @@ void mostrar_prestamos(Lista_de_prestamos &prestamos) {
     */
 }
 
-void mostrar_reportes(Lista_de_reporte reportes) {
-    /*
-    * cicla reportes y muestra cada uno por pantalla
-    */
+void mostrar_reportes(Lista_de_reporte &reportes) {
+    for (int i = 0; i < reportes.longitud; ++i) {
+        mostrar_categoria(*(reportes.categorias[i].categoria));
+        cout << "-> Cantidad de prestamos pendientes: " << reportes.categorias[i].cantidad << endl;
+    }
+    cout << endl;
 }
 
 void aviso(string mensaje) {
