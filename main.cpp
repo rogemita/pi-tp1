@@ -94,7 +94,7 @@ Prestamo crear_prestamo(Categoria &categoria, Prestatario &prestatario, string d
 /*
 PROPÓSITO: crear un prestatario
 PARÁMETROS:
-    codigo: campo codigo de la categoria
+    codigo: campo codigo del prestatario
     nombre: el campo nombre del prestatario (precondicion: cadena no vacia)
     apellido: el campo apellido del prestatario (precondicion: cadena no vacia)
 RETORNO: un prestatario
@@ -277,7 +277,7 @@ PROPÓSITO: obtener una categoria existente, solicitando al usuario ingresar el 
 PARÁMETROS:
     categorias: Lista de categorias para listar
     texto_a_mostrar: texto de referencia a lo que se debe ingresar
-RETORNO: un unsigned int
+RETORNO: la categoria con el codigo que fue elegido por el usuario
 */
 Categoria& pedir_categoria(Lista_de_categorias &categorias, string texto_a_mostrar);
 /*
@@ -285,7 +285,7 @@ PROPÓSITO: obtener un prestatario existente, solicitando al usuario ingresar el
 PARÁMETROS:
     prestatarios: Lista de prestatarios para listar
     texto_a_mostrar: texto de referencia a lo que se debe ingresar
-RETORNO: un unsigned int
+RETORNO: el prestatario con el codigo que fue elegido por el usuario
 */
 Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto_a_mostrar);
 /*
@@ -625,6 +625,15 @@ void mostrar_prestatario(Prestatario &prestatario) {
 void mostrar_prestamo(Prestamo &prestamo) {
     mostrar_categoria(*(prestamo.categoria));
     mostrar_prestatario(*(prestamo.prestatario));
+    // EN CORRECCION SE PUSO:
+    //REVISAR SI ESTO FUNCIONA (PRESTAMO.CATEGORIA Y
+    // PRESTAMO.PRESTATARIO YA SON PUNTEROS).
+    //CORRECCIÓN SEÑALADA ANTERIORMENTE
+
+    // RTA: Si, son punteros, pero las funciones mostrar_categoria y
+    // mostrar_prestatario no reciben como parametros punteros
+    // reciben referencias, es por eso que se pide el contenido del puntero para pasarlo
+    // a cada una de las funciones.
     cout << "DESCRIPCION: " << prestamo.descripcion << endl;
 }
 
@@ -648,6 +657,14 @@ bool validar_eliminacion_prestatario(Prestatario &prestatario, Lista_de_prestamo
 
 void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
     categorias.longitud--;
+    // EN CORRECCION SE PUSO:
+    //DEBERÍA EVITARSE EL CORRIMIENTO CUANDO EL ELEMENTO A BORRAR FUERA EL ÚLTIMO
+    //SUGERENCIA QUE SE HIZO EN LA CORRECCIÓN ANTERIOR
+
+    // RTA: Al decrementarse la longitud logica al comienzo se evita ciclar en el ultimo elemento
+    // EJ: [1, 10, 4, 5], el 5 a borrar (posicion 3), long(categorias) = 4. 3 desp de decrementar:
+    // i = 3; i < 3 => FALSE, no entra al for y la long ahora es 3.
+    // Lo mismo para borrar_prestatario y borrar_prestamo que fueron señalados con lo mismo.
     for (unsigned int i = posicion; i < categorias.longitud; i++) {
         categorias.lista[i] = categorias.lista[i+1];
     }
@@ -704,6 +721,14 @@ unsigned int listar(Lista_de_prestamos &prestamos) {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
     } while (seleccion > longitud || seleccion == 0);
     return seleccion - 1;
+    //RETORNO, SIEMPRE RETORNA ­1?
+
+    //RTA: retorna seleccion - 1, seleccion tiene que ser un numero 0 < seleccion <= longitud(prestamos)
+    // EJ: la persona elije el prestamo en la posicion 1, 1 - 1 = 0, elijio el primer prestamo
+    // de la lista, es decir el prestamo en la posicion 0.
+    // EJ: Si hay 5 prestamos, la persona elije el numero 6 que ve en la lista,
+    // es decir que elije el prestamo en la posicion 5.
+    // Mismo caso en las dos funciones lista de arriba.
 }
 
 bool tiene_prestamo(Lista_de_prestamos const &prestamos, Prestatario const &prestatario) {
