@@ -917,6 +917,7 @@ void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria
 }
 
 void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_de_prestamos &pendientes) {
+    // NO LLEGAMOS CON EL TIEMPO PARA IMPLEMENTARLA, LA ENTREGAMOS EN LA PROX ENTREGA
     /*
     * revisa campo si es categoria o prestatario, para luego recorrer los prestamos pendientes
     * y quedarse con el codigo de categoria o prestatario segun corresponda.
