@@ -371,8 +371,8 @@ void crear_prestamos_de_ejemplo(Almacen &almacen) {
     Prestatario& garcia = pedir_prestatario(almacen.prestatarios, 0);
     Prestamo prestamo1 = crear_prestamo(juegos, garcia, "Mortal Kombat 4");
     almacenar_prestamo(almacen.prestamos, prestamo1);
-    Prestatario& lamuela = pedir_prestatario(almacen.prestatarios, 1);
-    Prestamo prestamo2 = crear_prestamo(juegos, lamuela, "Mortal Kombat 3");
+    // Prestatario& lamuela = pedir_prestatario(almacen.prestatarios, 1);
+    Prestamo prestamo2 = crear_prestamo(juegos, garcia, "Mortal Kombat 3");
     almacenar_prestamo(almacen.prestamos, prestamo2);
 }
 
@@ -925,6 +925,12 @@ void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_
 }
 
 void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos) {
+
+    // para evitar mostrar prestatarios repetidos
+    int mostrados[prestamos.longitud];
+    int mostrados_long = 0;
+
+    // para almacenar los prestatarios que tienen prestamos pendientes
     Lista_de_prestatarios prestatarios;
     for (int i = 0; i < prestamos.longitud; i++) {
         if (prestamos.lista[i].estado) {
@@ -932,16 +938,31 @@ void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos)
         }
     }
 
+    // se muestra el reporte
     int cant;
+    bool mostrado;
     for (int i = 0; i < prestatarios.longitud; i++) {
         cant = 0;
-        mostrar_prestatario(prestatarios.lista[i]);
-        for (int j = 0; j < prestatarios.longitud; j++) {
-            if (prestatarios.lista[i].codigo == prestatarios.lista[j].codigo) {
-                cant++;
-            }
+        mostrado = false;
+        for (int j = 0; j < mostrados_long; j++) {
+            mostrado = mostrados[j] == prestatarios.lista[j].codigo;
+            if (mostrado) { break; }
         }
-        cout << "-> Cantidad de prestamos pendientes: " << cant << endl;
+        if (!mostrado) {
+            mostrar_prestatario(prestatarios.lista[i]);
+            // se busca cuantas veces se almaceno este prestatario para ver cuantos prestamos
+            // pendientes tiene
+            for (int j = 0; j < prestatarios.longitud; j++) {
+                if (prestatarios.lista[i].codigo == prestatarios.lista[j].codigo) {
+                    cant++;
+                }
+            }
+            cout << "-> Cantidad de prestamos pendientes: " << cant << endl;
+            // se agrega el codigo del prestatario en mostrados para evitar
+            // mostrarlo otra vez
+            mostrados[i] = prestatarios.lista[i].codigo;
+            mostrados_long++;
+        }
     }
 }
 
