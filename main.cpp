@@ -49,7 +49,7 @@ struct Prestamo {
 
 struct Lista_de_prestamos {
     Prestamo lista[CANTIDAD_PRESTAMOS];
-    unsigned int longitud {0};
+    int longitud = 0;
 };
 
 struct Almacen {
@@ -300,7 +300,7 @@ PARÁMETROS:
     prestamos: la lista de prestamos
     categoria: la categoria para filtrar prestamos
 */
-Lista_de_prestamos prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria);
+void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria, Lista_de_prestamos& prestamos_filtrados);
 /*
 PROPÓSITO: dibujar en pantalla un reporte de prestamos pendientes ordenados y agrupados por el campo dado
 PARÁMETROS:
@@ -371,6 +371,9 @@ void crear_prestamos_de_ejemplo(Almacen &almacen) {
     Prestatario& garcia = pedir_prestatario(almacen.prestatarios, 0);
     Prestamo prestamo1 = crear_prestamo(juegos, garcia, "Mortal Kombat 4");
     almacenar_prestamo(almacen.prestamos, prestamo1);
+    Prestatario& lamuela = pedir_prestatario(almacen.prestatarios, 1);
+    Prestamo prestamo2 = crear_prestamo(juegos, lamuela, "Mortal Kombat 3");
+    almacenar_prestamo(almacen.prestamos, prestamo2);
 }
 
 /*
@@ -564,8 +567,9 @@ int main() {
                 //list prestamo por cat
                 unsigned int posicion = listar(almacen.categorias);
                 Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
-                Lista_de_prestamos reporte = prestamos_por_categoria(almacen.prestamos, seleccionada);
-                mostrar_prestamos(reporte);
+                Lista_de_prestamos prestamos_x_cat;
+                prestamos_por_categoria(almacen.prestamos, seleccionada, prestamos_x_cat);
+                mostrar_prestamos(prestamos_x_cat);
                 break;
             }
             case 33: {
@@ -903,14 +907,12 @@ Lista_de_reporte& cantidad_prestamos_por_categoria(Almacen &almacen) {
     return reportes;
 }
 
-Lista_de_prestamos prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria) {
-    /*
-    * llama una funcion auxiliar que retorna una lista de prestamos dada una categoria.
-    * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
-    * categoria el codigo de la categoria recibida por parametro y las pone en un array que devuelve.
-    */
-    Lista_de_prestamos prestamos_filtrados;
-    return prestamos_filtrados;
+void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria, Lista_de_prestamos& prestamos_filtrados) {
+    for (int i = 0; i < prestamos.longitud; ++i) {
+        if (&categoria == prestamos.lista[i].categoria && prestamos.lista[i].estado) {
+            almacenar_prestamo(prestamos_filtrados, prestamos.lista[i]);
+        }
+    }
 }
 
 Lista_de_prestamos prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo) {
@@ -931,9 +933,9 @@ void listar_prestatarios_con_prestamos_pendientes(Almacen &almacen) {
 }
 
 void mostrar_prestamos(Lista_de_prestamos &prestamos) {
-    /*
-    * cicla prestamos y muestra cada uno por pantalla
-    */
+    for (int i = 0; i < prestamos.longitud; i++) {
+        mostrar_prestamo(prestamos.lista[i]);
+    }
 }
 
 void mostrar_reportes(Lista_de_reporte &reportes) {
