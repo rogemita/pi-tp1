@@ -307,7 +307,7 @@ PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
     campo: texto C/c para categoria o P/p para prestatario
 */
-Lista_de_prestamos prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo);
+void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_de_prestamos &pendientes);
 /*
 PROPÓSITO: dibujar los prestatarios que tienen prestamos pendientes
 PARÁMETROS:
@@ -576,7 +576,8 @@ int main() {
                 if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
                 //list ordenado prestamo por cat o prestatario
                 string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?");
-                Lista_de_prestamos pendientes = prestamos_pendientes_segun_criterio(almacen, campo);
+                Lista_de_prestamos pendientes;
+                prestamos_pendientes_segun_criterio(almacen, campo, pendientes);
                 mostrar_prestamos(pendientes);
                 break;
             }
@@ -915,14 +916,12 @@ void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria
     }
 }
 
-Lista_de_prestamos prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo) {
+void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_de_prestamos &pendientes) {
     /*
     * revisa campo si es categoria o prestatario, para luego recorrer los prestamos pendientes
     * y quedarse con el codigo de categoria o prestatario segun corresponda.
     * Se filtra el array para eliminar repeticiones y ordenarlo para luego retornarlo.
     */
-    Lista_de_prestamos prestamos;
-    return prestamos;
 }
 
 void listar_prestatarios_con_prestamos_pendientes(Almacen &almacen) {
