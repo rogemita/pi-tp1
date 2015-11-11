@@ -313,7 +313,7 @@ PROPÓSITO: dibujar los prestatarios que tienen prestamos pendientes
 PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
 */
-void listar_prestatarios_con_prestamos_pendientes(Almacen &almacen);
+void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos);
 /*
 PROPÓSITO: muestra prestamos por pantalla
 PARÁMETROS:
@@ -583,7 +583,7 @@ int main() {
             }
             case 34: {
                 if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
-                listar_prestatarios_con_prestamos_pendientes(almacen);
+                listar_prestatarios_con_prestamos_pendientes(almacen.prestamos);
                 break;
             }
             default: {
@@ -924,11 +924,25 @@ void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_
     */
 }
 
-void listar_prestatarios_con_prestamos_pendientes(Almacen &almacen) {
-    /*
-    * Se recorren los prestamos y si el campo estado es true se alamacena
-    * el prestatario en un array auxiliar para luego mostrarlo por pantalla
-    */
+void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos) {
+    Lista_de_prestatarios prestatarios;
+    for (int i = 0; i < prestamos.longitud; i++) {
+        if (prestamos.lista[i].estado) {
+            almacenar_prestatario(prestatarios, *(prestamos.lista[i].prestatario));
+        }
+    }
+
+    int cant;
+    for (int i = 0; i < prestatarios.longitud; i++) {
+        cant = 0;
+        mostrar_prestatario(prestatarios.lista[i]);
+        for (int j = 0; j < prestatarios.longitud; j++) {
+            if (prestatarios.lista[i].codigo == prestatarios.lista[j].codigo) {
+                cant++;
+            }
+        }
+        cout << "-> Cantidad de prestamos pendientes: " << cant << endl;
+    }
 }
 
 void mostrar_prestamos(Lista_de_prestamos &prestamos) {
