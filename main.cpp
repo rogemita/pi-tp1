@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -24,10 +25,7 @@ struct Categoria {
     string descripcion;
 };
 
-struct Lista_de_categorias {
-    Categoria lista[CANTIDAD_CATEGORIAS];
-    unsigned int longitud {0};
-};
+using Lista_de_categorias = vector<Categoria>;
 
 struct Prestatario {
     unsigned int codigo;
@@ -463,7 +461,7 @@ int main() {
                 break;
             }
             case 12: {
-                if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.categorias.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //modificar categoria
                 unsigned int posicion = listar(almacen.categorias);
                 Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
@@ -474,7 +472,7 @@ int main() {
                 break;
             }
             case 13: {
-                if (almacen.categorias.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.categorias.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 // eliminar categoria
                 unsigned int posicion = listar(almacen.categorias);
                 Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
@@ -526,7 +524,7 @@ int main() {
                 break;
             }
             case 21: {
-                if (almacen.categorias.longitud == 0 || almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.categorias.size() == 0 || almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
                 //agreagar prestamo
                 Categoria& categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
                 Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
@@ -684,18 +682,7 @@ bool validar_eliminacion_prestatario(Prestatario &prestatario, Lista_de_prestamo
 }
 
 void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
-    categorias.longitud--;
-    // EN CORRECCION SE PUSO:
-    //DEBERÍA EVITARSE EL CORRIMIENTO CUANDO EL ELEMENTO A BORRAR FUERA EL ÚLTIMO
-    //SUGERENCIA QUE SE HIZO EN LA CORRECCIÓN ANTERIOR
-
-    // RTA: Al decrementarse la longitud logica al comienzo se evita ciclar en el ultimo elemento
-    // EJ: [1, 10, 4, 5], el 5 a borrar (posicion 3), long(categorias) = 4. 3 desp de decrementar:
-    // i = 3; i < 3 => FALSE, no entra al for y la long ahora es 3.
-    // Lo mismo para borrar_prestatario y borrar_prestamo que fueron señalados con lo mismo.
-    for (unsigned int i = posicion; i < categorias.longitud; i++) {
-        categorias.lista[i] = categorias.lista[i+1];
-    }
+    categorias.erase(categorias.begin() + posicion);
 }
 
 void borrar_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
@@ -713,11 +700,13 @@ void borrar_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
 }
 
 unsigned int listar(Lista_de_categorias &categorias) {
-    unsigned int longitud = categorias.longitud;
+    unsigned int longitud = categorias.size();
     unsigned int seleccion = 0;
-    for (unsigned int i = 0; i < longitud; i++) {
-        cout << i + 1 << " -> ";
-        mostrar_categoria(categorias.lista[i]);
+    int i = 0;
+    for (auto p = categorias.begin(); p != categorias.end(); p++) {
+        i++;
+        cout << i << " -> ";
+        mostrar_categoria(*p);
     }
     do {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
@@ -781,9 +770,7 @@ void almacenar_prestamo(Lista_de_prestamos &prestamos, Prestamo &prestamo) {
 }
 
 void almacenar_categoria(Lista_de_categorias &categorias, Categoria &categoria) {
-    int longitud = categorias.longitud;
-    categorias.lista[longitud] = categoria;
-    categorias.longitud++;
+    categorias.push_back(categoria);
 }
 
 void almacenar_prestatario(Lista_de_prestatarios &prestatarios, Prestatario &prestatario) {
@@ -793,7 +780,7 @@ void almacenar_prestatario(Lista_de_prestatarios &prestatarios, Prestatario &pre
 }
 
 Categoria& pedir_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
-    return categorias.lista[posicion];
+    return categorias[posicion];
 }
 
 Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
@@ -821,7 +808,7 @@ Prestamo& seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario const 
 unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico) {
     unsigned int codigo = 0;
     if (almacen_especifico == "categorias") {
-        int longitud = almacen.categorias.longitud;
+        int longitud = almacen.categorias.size();
         if (longitud > 0) {
             Categoria ultima = pedir_categoria(almacen.categorias, longitud - 1);
             codigo = ultima.codigo + 1;
@@ -846,11 +833,13 @@ string pedir_dato(string texto_a_mostrar) {
 
 int existe_categoria(Lista_de_categorias &categorias, int codigo) {
     int posicion = -1;
-    for (unsigned int i = 0; i < categorias.longitud; i++) {
-        if (categorias.lista[i].codigo == codigo) {
+    int i = 0;
+    for (auto p = categorias.begin(); p != categorias.end(); p++) {
+        if ((*p).codigo == codigo) {
             posicion = i;
             break;
         }
+        i++;
     }
     return posicion;
 }
@@ -913,11 +902,13 @@ Lista_de_reporte& cantidad_prestamos_por_categoria(Almacen &almacen) {
     * categoria el codigo de la categoria recibida por parametro y arma el reporte.
     */
     Lista_de_reporte reportes;
-    for (int i = 0; i < almacen.categorias.longitud; ++i) {
-        int cant = cant_prestamos_pendientes_segun_categoria(almacen.categorias.lista[i], almacen.prestamos);
-        Reporte reporte = {&almacen.categorias.lista[i], cant};
+    int i = 0;
+    for (auto p = almacen.categorias.begin(); p != almacen.categorias.end(); p++) {
+        int cant = cant_prestamos_pendientes_segun_categoria(*p, almacen.prestamos);
+        Reporte reporte = {&(*p), cant};
         reportes.categorias[i] = reporte;
         reportes.longitud++;
+        i++;
     }
     return reportes;
 }
