@@ -293,18 +293,46 @@ PARÁMETROS:
     categoria: la categoria para filtrar prestamos
 */
 void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria, Lista_de_prestamos& prestamos_filtrados);
+
+
+
+/*
+PROPÓSITO: intercambia de posicion dos prestamos
+PARÁMETROS:
+    minimo: prestamo a colocar en la posicion de anterior
+    anterior: prestamo a colocar en la posicion de minimo
+*/
+void intercambiar_prestamos(Prestamo &minimo, Prestamo &anterior);
+
+/*
+PROPÓSITO: crea una lista con prestamos pendientes
+PARÁMETROS:
+    prestamos: la lista de prestamos
+    pendientes: la lista de prestamos pendientes
+*/
+void crear_lista_prestamos_pendientes(Lista_de_prestamos prestamos, Lista_de_prestamos &pendientes);
+
+/*
+PROPÓSITO: ordena alfabeticamente una lista de prestamos pendientes por categoria
+PARÁMETROS:
+    pendientes: lista de prestamos a ordenar
+*/
+
+void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes);
+/*
+PROPÓSITO: ordena alfabeticamente una lista de prestamos pendientes por prestatario
+PARÁMETROS:
+    pendientes: lista de prestamos a ordenar
+*/
+void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes);
+
+
 /*
 PROPÓSITO: dibujar en pantalla un reporte de prestamos pendientes ordenados y agrupados por el campo dado
 PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
     campo: texto C/c para categoria o P/p para prestatario
 */
-
-void intercambiar_prestamos(Prestamo &minimo, Prestamo &anterior);
-void crear_lista_prestamos_pendientes(Lista_de_prestamos prestamos, Lista_de_prestamos &pendientes);
-void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes);
-void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes);
-
 void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_de_prestamos &pendientes);
 /*
 PROPÓSITO: dibujar los prestatarios que tienen prestamos pendientes
