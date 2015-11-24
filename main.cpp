@@ -307,6 +307,12 @@ PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
     campo: texto C/c para categoria o P/p para prestatario
 */
+
+void intercambiar_prestamos(Prestamo &minimo, Prestamo &anterior);
+void crear_lista_prestamos_pendientes(Lista_de_prestamos prestamos, Lista_de_prestamos &pendientes);
+void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes);
+void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes);
+
 void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_de_prestamos &pendientes);
 /*
 PROPÓSITO: dibujar los prestatarios que tienen prestamos pendientes
@@ -345,6 +351,7 @@ PARÁMETROS:
     texto_a_mostrar: el texto que se debe mostrar antes de pedir confirmacion
 RETORNO: devuelve un bool que indica si se confirma o no
 */
+
 bool pedir_confirmacion(string texto_a_mostrar);
 
 // FIXTURES
@@ -369,11 +376,18 @@ void crear_prestatarios_de_ejemplo(Almacen &almacen) {
 void crear_prestamos_de_ejemplo(Almacen &almacen) {
     Categoria& juegos = pedir_categoria(almacen.categorias, 0);
     Prestatario& garcia = pedir_prestatario(almacen.prestatarios, 0);
+    Categoria& musica = pedir_categoria(almacen.categorias, 1);
+    Prestatario& carrizo = pedir_prestatario(almacen.prestatarios, 2);
+    Categoria& libros = pedir_categoria(almacen.categorias, 2);
+    Prestatario& lamuela = pedir_prestatario(almacen.prestatarios, 1);
     Prestamo prestamo1 = crear_prestamo(juegos, garcia, "Mortal Kombat 4");
     almacenar_prestamo(almacen.prestamos, prestamo1);
     // Prestatario& lamuela = pedir_prestatario(almacen.prestatarios, 1);
-    Prestamo prestamo2 = crear_prestamo(juegos, garcia, "Mortal Kombat 3");
+    Prestamo prestamo2 = crear_prestamo(musica, carrizo, "Metallica");
     almacenar_prestamo(almacen.prestamos, prestamo2);
+    Prestamo prestamo3 = crear_prestamo(libros, lamuela, "El Hobbit");
+    almacenar_prestamo(almacen.prestamos, prestamo3);
+
 }
 
 /*
@@ -916,13 +930,59 @@ void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria
     }
 }
 
-void prestamos_pendientes_segun_criterio(Almacen &alamacen, string campo, Lista_de_prestamos &pendientes) {
+void crear_lista_prestamos_pendientes(Lista_de_prestamos prestamos, Lista_de_prestamos &pendientes){
+    for (int i = 0; i < prestamos.longitud; i++) {
+        if (prestamos.lista[i].estado) {
+            almacenar_prestamo(pendientes, prestamos.lista[i]);
+        }
+    }
+}
+
+void intercambiar_prestamos(Prestamo &minimo, Prestamo &anterior){
+    Prestamo auxiliar = anterior;
+    anterior = minimo;
+    minimo = auxiliar;
+}
+
+void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes){
+    for (int i=0 ; i < (pendientes.longitud-1); i++){
+        int minimo = i;
+        for (int j=i+1; j < pendientes.longitud; j++){
+            if ((*(pendientes.lista[j].categoria)).descripcion < (*(pendientes.lista[minimo].categoria)).descripcion) {
+                minimo = j;
+            }
+        }
+        intercambiar_prestamos(pendientes.lista[minimo], pendientes.lista[i]);
+    }
+}
+
+
+void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes){
+    for (int i=0 ; i < (pendientes.longitud-1); i++){
+        int minimo = i;
+        for (int j=i+1; j < pendientes.longitud; j++){
+            if ((*(pendientes.lista[j].prestatario)).apellido < (*(pendientes.lista[minimo].prestatario)).apellido) {
+                minimo = j;
+            }
+        }
+        intercambiar_prestamos(pendientes.lista[minimo], pendientes.lista[i]);
+    }
+}
+
+void prestamos_pendientes_segun_criterio(Almacen &almacen, string campo, Lista_de_prestamos &pendientes) {
     // NO LLEGAMOS CON EL TIEMPO PARA IMPLEMENTARLA, LA ENTREGAMOS EN LA PROX ENTREGA
     /*
     * revisa campo si es categoria o prestatario, para luego recorrer los prestamos pendientes
     * y quedarse con el codigo de categoria o prestatario segun corresponda.
     * Se filtra el array para eliminar repeticiones y ordenarlo para luego retornarlo.
     */
+    crear_lista_prestamos_pendientes(almacen.prestamos, pendientes);
+    if (campo == "c") {
+        ordenar_lista_por_categoria(pendientes);
+    }
+    if (campo == "p") {
+        ordenar_lista_por_prestatario(pendientes);
+    }
 }
 
 void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos) {
@@ -946,7 +1006,7 @@ void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos)
         cant = 0;
         mostrado = false;
         for (int j = 0; j < mostrados_long; j++) {
-            mostrado = mostrados[j] == prestatarios.lista[j].codigo;
+            mostrado = mostrados[j] == prestatarios.lista[i].codigo;
             if (mostrado) { break; }
         }
         if (!mostrado) {
