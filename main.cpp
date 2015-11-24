@@ -33,10 +33,7 @@ struct Prestatario {
     string nombre;
 };
 
-struct Lista_de_prestatarios {
-    Prestatario lista[CANTIDAD_PRESTATARIOS];
-    unsigned int longitud {0};
-};
+using Lista_de_prestatarios = vector<Prestatario>;
 
 struct Prestamo {
     Categoria *categoria;
@@ -496,7 +493,7 @@ int main() {
                 break;
             }
             case 15:{
-                if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestatarios.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //modificar prestatario
                 unsigned int posicion = listar(almacen.prestatarios);
                 Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
@@ -510,7 +507,7 @@ int main() {
                 break;
             }
             case 16: {
-                if (almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestatarios.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //eliminar prestatario
                 unsigned int posicion = listar(almacen.prestatarios);
                 Prestatario& seleccionado = pedir_prestatario(almacen.prestatarios, posicion);
@@ -524,7 +521,7 @@ int main() {
                 break;
             }
             case 21: {
-                if (almacen.categorias.size() == 0 || almacen.prestatarios.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.categorias.size() == 0 || almacen.prestatarios.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //agreagar prestamo
                 Categoria& categoria = pedir_categoria(almacen.categorias, "Ingrese el codigo de la categoria: ");
                 Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, "Ingrese el codigo del prestatario: ");
@@ -686,10 +683,7 @@ void borrar_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
 }
 
 void borrar_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
-    prestatarios.longitud--;
-    for (unsigned int i = posicion; i < prestatarios.longitud; i++) {
-        prestatarios.lista[i] = prestatarios.lista[i+1];
-    }
+    prestatarios.erase(prestatarios.begin() + posicion);
 }
 
 void borrar_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
@@ -715,11 +709,13 @@ unsigned int listar(Lista_de_categorias &categorias) {
 }
 
 unsigned int listar(Lista_de_prestatarios &prestatarios) {
-    int longitud = prestatarios.longitud;
-    int seleccion = 0;
-    for (int i = 0; i < longitud; i++) {
-        cout << i + 1 << " -> ";
-        mostrar_prestatario(prestatarios.lista[i]);
+    unsigned int longitud = prestatarios.size();
+    unsigned int seleccion = 0;
+    int i = 0;
+    for (auto p = prestatarios.begin(); p != prestatarios.end(); p++) {
+        i++;
+        cout << i << " -> ";
+        mostrar_prestatario(*p);
     }
     do {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
@@ -774,9 +770,7 @@ void almacenar_categoria(Lista_de_categorias &categorias, Categoria &categoria) 
 }
 
 void almacenar_prestatario(Lista_de_prestatarios &prestatarios, Prestatario &prestatario) {
-    int longitud = prestatarios.longitud;
-    prestatarios.lista[longitud] = prestatario;
-    prestatarios.longitud++;
+    prestatarios.push_back(prestatario);
 }
 
 Categoria& pedir_categoria(Lista_de_categorias &categorias, unsigned int posicion) {
@@ -784,7 +778,7 @@ Categoria& pedir_categoria(Lista_de_categorias &categorias, unsigned int posicio
 }
 
 Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion) {
-    return prestatarios.lista[posicion];
+    return prestatarios[posicion];
 }
 
 Prestamo& pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
@@ -815,7 +809,7 @@ unsigned int obtener_codigo(Almacen &almacen, string almacen_especifico) {
         }
     }
     if (almacen_especifico == "prestatarios") {
-        int longitud = almacen.prestatarios.longitud;
+        int longitud = almacen.prestatarios.size();
         if (longitud > 0) {
             Prestatario ultimo = pedir_prestatario(almacen.prestatarios, longitud - 1);
             codigo = ultimo.codigo + 1;
@@ -846,11 +840,13 @@ int existe_categoria(Lista_de_categorias &categorias, int codigo) {
 
 int existe_prestatario(Lista_de_prestatarios &prestatarios, int codigo) {
     int posicion = -1;
-    for (unsigned int i = 0; i < prestatarios.longitud; i++) {
-        if (prestatarios.lista[i].codigo == codigo) {
+    int i = 0;
+    for (auto p = prestatarios.begin(); p != prestatarios.end(); p++) {
+        if ((*p).codigo == codigo) {
             posicion = i;
             break;
         }
+        i++;
     }
     return posicion;
 }
@@ -993,26 +989,26 @@ void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos)
     // se muestra el reporte
     int cant;
     bool mostrado;
-    for (int i = 0; i < prestatarios.longitud; i++) {
+    for (int i = 0; i < prestatarios.size(); i++) {
         cant = 0;
         mostrado = false;
         for (int j = 0; j < mostrados_long; j++) {
-            mostrado = mostrados[j] == prestatarios.lista[i].codigo;
+            mostrado = mostrados[j] == prestatarios[i].codigo;
             if (mostrado) { break; }
         }
         if (!mostrado) {
-            mostrar_prestatario(prestatarios.lista[i]);
+            mostrar_prestatario(prestatarios[i]);
             // se busca cuantas veces se almaceno este prestatario para ver cuantos prestamos
             // pendientes tiene
-            for (int j = 0; j < prestatarios.longitud; j++) {
-                if (prestatarios.lista[i].codigo == prestatarios.lista[j].codigo) {
+            for (int j = 0; j < prestatarios.size(); j++) {
+                if (prestatarios[i].codigo == prestatarios[j].codigo) {
                     cant++;
                 }
             }
             cout << "-> Cantidad de prestamos pendientes: " << cant << endl;
             // se agrega el codigo del prestatario en mostrados para evitar
             // mostrarlo otra vez
-            mostrados[i] = prestatarios.lista[i].codigo;
+            mostrados[i] = prestatarios[i].codigo;
             mostrados_long++;
         }
     }
