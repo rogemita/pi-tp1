@@ -285,7 +285,7 @@ PROPÓSITO: dibujar en pantalla un reporte de cantidad de prestamos por cada cat
 PARÁMETROS:
     alamacen: el almacen donde se encuentra toda la informacion
 */
-Lista_de_reporte& cantidad_prestamos_por_categoria(Almacen &almacen);
+void cantidad_prestamos_por_categoria(Almacen &almacen, Lista_de_reporte &reportes);
 /*
 PROPÓSITO: dibujar en pantalla un reporte de prestamos para una categoria dada
 PARÁMETROS:
@@ -564,7 +564,8 @@ int main() {
             case 31: {
                 if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //cant obj prestados por cat
-                Lista_de_reporte& reportes = cantidad_prestamos_por_categoria(almacen);
+                Lista_de_reporte reportes;
+                cantidad_prestamos_por_categoria(almacen, reportes);
                 mostrar_reportes(reportes);
                 break;
             }
@@ -867,32 +868,22 @@ Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto
 
 int cant_prestamos_pendientes_segun_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
     int cant = 0;
-    for (int i = 0; i < prestamos.size(); ++i) {
-        if (&categoria == prestamos[i].categoria && prestamos[i].estado) {
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        if (&categoria == (*p).categoria && (*p).estado) {
             cant++;
         }
     }
     return cant;
 }
 
-Lista_de_reporte& cantidad_prestamos_por_categoria(Almacen &almacen) {
-    /*
-    * ciclar la lista de categorias y llamar a una funcion auxiliar
-    * que retorna la lista de prestamos dada una categoria
-    * y mostrar la longitud de esta y se dibuja en pantalla
-    * Esta funcion recorre la lista de prestamos buscando por aquellas que tengan en el campo
-    * categoria el codigo de la categoria recibida por parametro y arma el reporte.
-    */
-    Lista_de_reporte reportes;
-    int i = 0;
+void cantidad_prestamos_por_categoria(Almacen &almacen, Lista_de_reporte &reportes) {
+    Reporte reporte;
     for (auto p = almacen.categorias.begin(); p != almacen.categorias.end(); p++) {
         int cant = cant_prestamos_pendientes_segun_categoria(*p, almacen.prestamos);
-        Reporte reporte = {&(*p), cant};
-        reportes.categorias[i] = reporte;
+        reporte = {&(*p), cant};
+        reportes.categorias[reportes.longitud] = reporte;
         reportes.longitud++;
-        i++;
     }
-    return reportes;
 }
 
 void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria, Lista_de_prestamos& prestamos_filtrados) {
