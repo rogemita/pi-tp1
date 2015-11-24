@@ -42,10 +42,7 @@ struct Prestamo {
     bool estado;
 };
 
-struct Lista_de_prestamos {
-    Prestamo lista[CANTIDAD_PRESTAMOS];
-    int longitud = 0;
-};
+using Lista_de_prestamos = vector<Prestamo>;
 
 struct Almacen {
     Lista_de_categorias categorias;
@@ -532,7 +529,7 @@ int main() {
                 break;
             }
             case 22: {
-                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //modificar prestamo
                 unsigned int posicion = listar(almacen.prestamos);
                 Prestamo& seleccionado = pedir_prestamo(almacen.prestamos, posicion);
@@ -543,7 +540,7 @@ int main() {
                 break;
             }
             case 23: {
-                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //eliminar prestamo
                 unsigned int posicion = listar(almacen.prestamos);
                 borrar_prestamo(almacen.prestamos, posicion);
@@ -551,7 +548,7 @@ int main() {
                 break;
             }
             case 24: {
-                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //devolver prestamo
                 unsigned int posicion = listar(almacen.prestatarios);
                 Prestatario& prestatario = pedir_prestatario(almacen.prestatarios, posicion);
@@ -565,14 +562,14 @@ int main() {
                 break;
             }
             case 31: {
-                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //cant obj prestados por cat
                 Lista_de_reporte& reportes = cantidad_prestamos_por_categoria(almacen);
                 mostrar_reportes(reportes);
                 break;
             }
             case 32: {
-                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //list prestamo por cat
                 unsigned int posicion = listar(almacen.categorias);
                 Categoria& seleccionada = pedir_categoria(almacen.categorias, posicion);
@@ -582,7 +579,7 @@ int main() {
                 break;
             }
             case 33: {
-                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 //list ordenado prestamo por cat o prestatario
                 string campo = pedir_dato("¿Clasificar el listado por Categoría (C) o Prestatario (P)?");
                 Lista_de_prestamos pendientes;
@@ -591,7 +588,7 @@ int main() {
                 break;
             }
             case 34: {
-                if (almacen.prestamos.longitud == 0) { aviso(SIN_ELEMENTOS); break; }
+                if (almacen.prestamos.size() == 0) { aviso(SIN_ELEMENTOS); break; }
                 listar_prestatarios_con_prestamos_pendientes(almacen.prestamos);
                 break;
             }
@@ -662,8 +659,8 @@ void mostrar_prestamo(Prestamo &prestamo) {
 
 bool validar_eliminacion_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
     bool valido = true;
-    for (unsigned int i = 0; i < prestamos.longitud; i++) {
-        valido = &categoria != prestamos.lista[i].categoria;
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        valido = &categoria != (*p).categoria;
         if (!valido) { break; }
     }
     return valido;
@@ -671,8 +668,8 @@ bool validar_eliminacion_categoria(Categoria &categoria, Lista_de_prestamos &pre
 
 bool validar_eliminacion_prestatario(Prestatario &prestatario, Lista_de_prestamos &prestamos) {
     bool valido = true;
-    for (unsigned int i = 0; i < prestamos.longitud; i++) {
-        valido = &prestatario != prestamos.lista[i].prestatario;
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        valido = &prestatario != (*p).prestatario;
         if (!valido) { break; }
     }
     return valido;
@@ -687,10 +684,7 @@ void borrar_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posici
 }
 
 void borrar_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
-    prestamos.longitud--;
-    for (unsigned int i = posicion; i < prestamos.longitud; i++) {
-        prestamos.lista[i] = prestamos.lista[i+1];
-    }
+    prestamos.erase(prestamos.begin() + posicion);
 }
 
 unsigned int listar(Lista_de_categorias &categorias) {
@@ -724,30 +718,24 @@ unsigned int listar(Lista_de_prestatarios &prestatarios) {
 }
 
 unsigned int listar(Lista_de_prestamos &prestamos) {
-    int longitud = prestamos.longitud;
-    int seleccion = 0;
-    for (int i = 0; i < longitud; i++) {
-        cout << i + 1 << " -> ";
-        mostrar_prestamo(prestamos.lista[i]);
+    unsigned int longitud = prestamos.size();
+    unsigned int seleccion = 0;
+    int i = 0;
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        i++;
+        cout << i << " -> ";
+        mostrar_prestamo(*p);
     }
     do {
         seleccion = pedir_opcion("[Seleccione un elmento de la lista]: ");
     } while (seleccion > longitud || seleccion == 0);
     return seleccion - 1;
-    //RETORNO, SIEMPRE RETORNA ­1?
-
-    //RTA: retorna seleccion - 1, seleccion tiene que ser un numero 0 < seleccion <= longitud(prestamos)
-    // EJ: la persona elije el prestamo en la posicion 1, 1 - 1 = 0, elijio el primer prestamo
-    // de la lista, es decir el prestamo en la posicion 0.
-    // EJ: Si hay 5 prestamos, la persona elije el numero 6 que ve en la lista,
-    // es decir que elije el prestamo en la posicion 5.
-    // Mismo caso en las dos funciones lista de arriba.
 }
 
 bool tiene_prestamo(Lista_de_prestamos const &prestamos, Prestatario const &prestatario) {
     bool tiene = false;
-    for (unsigned int i = 0; i < prestamos.longitud; i++) {
-        tiene = &prestatario == prestamos.lista[i].prestatario;
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        tiene = &prestatario == (*p).prestatario;
         if (tiene) {
             break;
         }
@@ -760,9 +748,7 @@ void devolver_prestamo(Prestamo &prestamo){
 }
 
 void almacenar_prestamo(Lista_de_prestamos &prestamos, Prestamo &prestamo) {
-    int longitud = prestamos.longitud;
-    prestamos.lista[longitud] = prestamo;
-    prestamos.longitud++;
+    prestamos.push_back(prestamo);
 }
 
 void almacenar_categoria(Lista_de_categorias &categorias, Categoria &categoria) {
@@ -782,15 +768,15 @@ Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int
 }
 
 Prestamo& pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
-    return prestamos.lista[posicion];
+    return prestamos[posicion];
 }
 
 Prestamo& seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario const &prestatario) {
     int posiciones[CANTIDAD_PRESTAMOS];
     Lista_de_prestamos prestamos_seleccionados;
     int j = 0;
-    for (unsigned int i = 0; i < prestamos.longitud; i++) {
-        if (&prestatario == prestamos.lista[i].prestatario) {
+    for (unsigned int i = 0; i < prestamos.size(); i++) {
+        if (&prestatario == prestamos[i].prestatario) {
             posiciones[j] = i;
             j++;
         }
@@ -881,8 +867,8 @@ Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, string texto
 
 int cant_prestamos_pendientes_segun_categoria(Categoria &categoria, Lista_de_prestamos &prestamos) {
     int cant = 0;
-    for (int i = 0; i < prestamos.longitud; ++i) {
-        if (&categoria == prestamos.lista[i].categoria && prestamos.lista[i].estado) {
+    for (int i = 0; i < prestamos.size(); ++i) {
+        if (&categoria == prestamos[i].categoria && prestamos[i].estado) {
             cant++;
         }
     }
@@ -910,17 +896,17 @@ Lista_de_reporte& cantidad_prestamos_por_categoria(Almacen &almacen) {
 }
 
 void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria, Lista_de_prestamos& prestamos_filtrados) {
-    for (int i = 0; i < prestamos.longitud; ++i) {
-        if (&categoria == prestamos.lista[i].categoria && prestamos.lista[i].estado) {
-            almacenar_prestamo(prestamos_filtrados, prestamos.lista[i]);
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        if (&categoria == (*p).categoria && (*p).estado) {
+            almacenar_prestamo(prestamos_filtrados, *p);
         }
     }
 }
 
 void crear_lista_prestamos_pendientes(Lista_de_prestamos prestamos, Lista_de_prestamos &pendientes){
-    for (int i = 0; i < prestamos.longitud; i++) {
-        if (prestamos.lista[i].estado) {
-            almacenar_prestamo(pendientes, prestamos.lista[i]);
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        if ((*p).estado) {
+            almacenar_prestamo(pendientes, *p);
         }
     }
 }
@@ -932,27 +918,27 @@ void intercambiar_prestamos(Prestamo &minimo, Prestamo &anterior){
 }
 
 void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes){
-    for (int i=0 ; i < (pendientes.longitud-1); i++){
+    for (int i=0 ; i < (pendientes.size() -1); i++){
         int minimo = i;
-        for (int j=i+1; j < pendientes.longitud; j++){
-            if ((*(pendientes.lista[j].categoria)).descripcion < (*(pendientes.lista[minimo].categoria)).descripcion) {
+        for (int j=i+1; j < pendientes.size(); j++){
+            if ((*(pendientes[j].categoria)).descripcion < (*(pendientes[minimo].categoria)).descripcion) {
                 minimo = j;
             }
         }
-        intercambiar_prestamos(pendientes.lista[minimo], pendientes.lista[i]);
+        intercambiar_prestamos(pendientes[minimo], pendientes[i]);
     }
 }
 
 
 void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes){
-    for (int i=0 ; i < (pendientes.longitud-1); i++){
+    for (int i=0 ; i < (pendientes.size() -1); i++){
         int minimo = i;
-        for (int j=i+1; j < pendientes.longitud; j++){
-            if ((*(pendientes.lista[j].prestatario)).apellido < (*(pendientes.lista[minimo].prestatario)).apellido) {
+        for (int j=i+1; j < pendientes.size(); j++){
+            if ((*(pendientes[j].prestatario)).apellido < (*(pendientes[minimo].prestatario)).apellido) {
                 minimo = j;
             }
         }
-        intercambiar_prestamos(pendientes.lista[minimo], pendientes.lista[i]);
+        intercambiar_prestamos(pendientes[minimo], pendientes[i]);
     }
 }
 
@@ -975,14 +961,14 @@ void prestamos_pendientes_segun_criterio(Almacen &almacen, string campo, Lista_d
 void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos) {
 
     // para evitar mostrar prestatarios repetidos
-    int mostrados[prestamos.longitud];
+    int mostrados[prestamos.size()];
     int mostrados_long = 0;
 
     // para almacenar los prestatarios que tienen prestamos pendientes
     Lista_de_prestatarios prestatarios;
-    for (int i = 0; i < prestamos.longitud; i++) {
-        if (prestamos.lista[i].estado) {
-            almacenar_prestatario(prestatarios, *(prestamos.lista[i].prestatario));
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        if ((*p).estado) {
+            almacenar_prestatario(prestatarios, *((*p).prestatario));
         }
     }
 
@@ -1015,8 +1001,8 @@ void listar_prestatarios_con_prestamos_pendientes(Lista_de_prestamos &prestamos)
 }
 
 void mostrar_prestamos(Lista_de_prestamos &prestamos) {
-    for (int i = 0; i < prestamos.longitud; i++) {
-        mostrar_prestamo(prestamos.lista[i]);
+    for (auto p = prestamos.begin(); p != prestamos.end(); p++) {
+        mostrar_prestamo(*p);
     }
 }
 
