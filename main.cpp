@@ -4,9 +4,6 @@
 
 using namespace std;
 
-int const CANTIDAD_CATEGORIAS = 200;
-int const CANTIDAD_PRESTAMOS = 200;
-int const CANTIDAD_PRESTATARIOS = 200;
 string const SIN_ELEMENTOS = "No hay elementos para realizar esta operacion";
 
 void limpiar_pantalla() {
@@ -55,10 +52,7 @@ struct Reporte {
     int cantidad;
 };
 
-struct Lista_de_reporte {
-    Reporte categorias[CANTIDAD_CATEGORIAS];
-    int longitud {0};
-};
+using Lista_de_reporte = vector<Reporte>;
 
 struct Menu {
     int id;
@@ -801,7 +795,7 @@ Prestamo& pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion) {
 }
 
 Prestamo& seleccionar_prestamo(Lista_de_prestamos &prestamos, Prestatario const &prestatario) {
-    int posiciones[CANTIDAD_PRESTAMOS];
+    int posiciones[prestamos.size()];
     Lista_de_prestamos prestamos_seleccionados;
     int j = 0;
     for (unsigned int i = 0; i < prestamos.size(); i++) {
@@ -909,8 +903,7 @@ void cantidad_prestamos_por_categoria(Almacen &almacen, Lista_de_reporte &report
     for (auto p = almacen.categorias.begin(); p != almacen.categorias.end(); p++) {
         int cant = cant_prestamos_pendientes_segun_categoria(*p, almacen.prestamos);
         reporte = {&(*p), cant};
-        reportes.categorias[reportes.longitud] = reporte;
-        reportes.longitud++;
+        reportes.push_back(reporte);
     }
 }
 
@@ -1026,9 +1019,9 @@ void mostrar_prestamos(Lista_de_prestamos &prestamos) {
 }
 
 void mostrar_reportes(Lista_de_reporte &reportes) {
-    for (int i = 0; i < reportes.longitud; ++i) {
-        mostrar_categoria(*(reportes.categorias[i].categoria));
-        cout << "-> Cantidad de prestamos pendientes: " << reportes.categorias[i].cantidad << endl;
+    for (auto p = reportes.begin(); p != reportes.end(); p++) {
+        mostrar_categoria(*(p->categoria));
+        cout << "-> Cantidad de prestamos pendientes: " << p->cantidad << endl;
     }
     cout << endl;
 }
