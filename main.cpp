@@ -202,6 +202,7 @@ PROPÓSITO: obtener una categoria de la lista en la posicion dada
 PARÁMETROS:
     categorias: el almacen de categorias
     posicion: la posicion de la categoria
+RETORNO: Categoria por referencia
 */
 Categoria& pedir_categoria(Lista_de_categorias &categorias, unsigned int posicion);
 /*
@@ -209,6 +210,7 @@ PROPÓSITO: obtener un prestatario de la lista en la posicion dada
 PARÁMETROS:
     prestatarios: el almacen de prestatarios
     posicion: la posicion del prestatario
+RETORNO: Prestatario por referencia
 */
 Prestatario& pedir_prestatario(Lista_de_prestatarios &prestatarios, unsigned int posicion);
 /*
@@ -216,6 +218,7 @@ PROPÓSITO: obtener un prestamo de la lista en la posicion dada
 PARÁMETROS:
     prestamos: el almacen de prestamos
     posicion: la posicion del prestamo
+RETORNO: Prestamo por referencia
 */
 Prestamo& pedir_prestamo(Lista_de_prestamos &prestamos, unsigned int posicion);
 /*
@@ -287,9 +290,6 @@ PARÁMETROS:
     categoria: la categoria para filtrar prestamos
 */
 void prestamos_por_categoria(Lista_de_prestamos &prestamos, Categoria &categoria, Lista_de_prestamos& prestamos_filtrados);
-
-
-
 /*
 PROPÓSITO: intercambia de posicion dos prestamos
 PARÁMETROS:
@@ -297,7 +297,6 @@ PARÁMETROS:
     anterior: prestamo a colocar en la posicion de minimo
 */
 void intercambiar_prestamos(Prestamo &minimo, Prestamo &anterior);
-
 /*
 PROPÓSITO: crea una lista con prestamos pendientes
 PARÁMETROS:
@@ -305,13 +304,11 @@ PARÁMETROS:
     pendientes: la lista de prestamos pendientes
 */
 void crear_lista_prestamos_pendientes(Lista_de_prestamos prestamos, Lista_de_prestamos &pendientes);
-
 /*
 PROPÓSITO: ordena alfabeticamente una lista de prestamos pendientes por categoria
 PARÁMETROS:
     pendientes: lista de prestamos a ordenar
 */
-
 void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes);
 /*
 PROPÓSITO: ordena alfabeticamente una lista de prestamos pendientes por prestatario
@@ -319,8 +316,6 @@ PARÁMETROS:
     pendientes: lista de prestamos a ordenar
 */
 void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes);
-
-
 /*
 PROPÓSITO: dibujar en pantalla un reporte de prestamos pendientes ordenados y agrupados por el campo dado
 PARÁMETROS:
@@ -365,7 +360,6 @@ PARÁMETROS:
     texto_a_mostrar: el texto que se debe mostrar antes de pedir confirmacion
 RETORNO: devuelve un bool que indica si se confirma o no
 */
-
 bool pedir_confirmacion(string texto_a_mostrar);
 
 // FIXTURES
@@ -396,7 +390,6 @@ void crear_prestamos_de_ejemplo(Almacen &almacen) {
     Prestatario& lamuela = pedir_prestatario(almacen.prestatarios, 1);
     Prestamo prestamo1 = crear_prestamo(juegos, garcia, "Mortal Kombat 4");
     almacenar_prestamo(almacen.prestamos, prestamo1);
-    // Prestatario& lamuela = pedir_prestatario(almacen.prestatarios, 1);
     Prestamo prestamo2 = crear_prestamo(musica, carrizo, "Metallica");
     almacenar_prestamo(almacen.prestamos, prestamo2);
     Prestamo prestamo3 = crear_prestamo(libros, lamuela, "El Hobbit");
