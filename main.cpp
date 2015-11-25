@@ -936,6 +936,7 @@ void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes){
 
 
 void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes){
+    // https://en.wikipedia.org/wiki/Selection_sort
     for (int i=0 ; i < (pendientes.size() -1); i++){
         int minimo = i;
         for (int j=i+1; j < pendientes.size(); j++){
@@ -948,12 +949,6 @@ void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes){
 }
 
 void prestamos_pendientes_segun_criterio(Almacen &almacen, string campo, Lista_de_prestamos &pendientes) {
-    // NO LLEGAMOS CON EL TIEMPO PARA IMPLEMENTARLA, LA ENTREGAMOS EN LA PROX ENTREGA
-    /*
-    * revisa campo si es categoria o prestatario, para luego recorrer los prestamos pendientes
-    * y quedarse con el codigo de categoria o prestatario segun corresponda.
-    * Se filtra el array para eliminar repeticiones y ordenarlo para luego retornarlo.
-    */
     crear_lista_prestamos_pendientes(almacen.prestamos, pendientes);
     if (campo == "c") {
         ordenar_lista_por_categoria(pendientes);
