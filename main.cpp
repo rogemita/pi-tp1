@@ -930,7 +930,11 @@ void ordenar_lista_por_categoria(Lista_de_prestamos &pendientes){
                 minimo = j;
             }
         }
-        intercambiar_prestamos(pendientes[minimo], pendientes[i]);
+        // intercambiar_prestamos(pendientes[minimo], pendientes[i]);
+
+        auto auxiliar = pendientes[i];
+        pendientes[i] = pendientes[minimo];
+        pendientes[minimo] = auxiliar;
     }
 }
 
@@ -944,7 +948,10 @@ void ordenar_lista_por_prestatario(Lista_de_prestamos &pendientes){
                 minimo = j;
             }
         }
-        intercambiar_prestamos(pendientes[minimo], pendientes[i]);
+        // intercambiar_prestamos(pendientes[minimo], pendientes[i]);
+        auto auxiliar = pendientes[i];
+        pendientes[i] = pendientes[minimo];
+        pendientes[minimo] = auxiliar;
     }
 }
 
